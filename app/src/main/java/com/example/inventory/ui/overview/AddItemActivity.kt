@@ -5,9 +5,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.lifecycleScope
 import androidx.appcompat.app.AppCompatActivity
 import com.example.inventory.R
 import com.example.inventory.data.model.Item
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,7 +55,7 @@ class AddItemActivity : AppCompatActivity() {
         // We can check if item already exists by name, or just insert.
         // For demonstration, we’ll just add the item.
         val newItem = Item(name = itemName, quantity = quantity, dateAdded = currentDate)
-        overviewViewModel.viewModelScope.launchWhenStarted {
+        overviewViewModel.viewModelScope.launch {
             val existingItem = overviewViewModel.allItems.value.find { it.name == itemName }
             if (existingItem != null) {
                 overviewViewModel.updateItemQuantity(existingItem, existingItem.quantity + quantity)

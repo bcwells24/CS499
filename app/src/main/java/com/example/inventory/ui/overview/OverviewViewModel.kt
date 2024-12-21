@@ -2,6 +2,7 @@ package com.example.inventory.ui.overview
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventory.data.local.InventoryDatabase
 import com.example.inventory.data.model.Item

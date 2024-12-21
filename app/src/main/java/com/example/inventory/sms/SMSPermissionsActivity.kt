@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.inventory.R
-import com.example.inventory.ui.main.MainActivity
+import com.example.inventory.ui.main.LoginActivity
 
 class SMSPermissionsActivity : AppCompatActivity() {
 
@@ -18,6 +18,7 @@ class SMSPermissionsActivity : AppCompatActivity() {
     private lateinit var smsPermissionToggle: ToggleButton
     private lateinit var permissionStatusTextView: TextView
     private lateinit var logoutButton: Button
+    private lateinit var returnButton: Button
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -35,6 +36,7 @@ class SMSPermissionsActivity : AppCompatActivity() {
         smsPermissionToggle = findViewById(R.id.toggleButtonSmsPermission)
         permissionStatusTextView = findViewById(R.id.textViewPermissionStatus)
         logoutButton = findViewById(R.id.logoutButton)
+        returnButton = findViewById(R.id.returnButton)
 
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         loadPreferences()
@@ -50,7 +52,10 @@ class SMSPermissionsActivity : AppCompatActivity() {
         }
 
         logoutButton.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
+        returnButton.setOnClickListener {
             finish()
         }
     }

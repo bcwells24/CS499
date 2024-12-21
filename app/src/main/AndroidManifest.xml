@@ -17,27 +17,38 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Inventory"
         tools:targetApi="31">
+
+        <!-- LoginActivity in ui.main package -->
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.inventory.ui.main.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- RegisterActivity in ui.main package -->
         <activity
-            android:name=".RegisterActivity"
-            android:exported="true"/>
+            android:name="com.example.inventory.ui.main.RegisterActivity"
+            android:exported="false" />
+
+        <!-- OverviewActivity in ui.overview package -->
         <activity
-            android:name=".AddItemActivity"
-            android:exported="true"/>
+            android:name="com.example.inventory.ui.overview.OverviewActivity"
+            android:exported="false" />
+
+        <!-- AddItemActivity in ui.overview package -->
         <activity
-            android:name=".OverviewActivity"
-            android:exported="true"/>
+            android:name="com.example.inventory.ui.overview.AddItemActivity"
+            android:exported="false" />
+
+        <!-- SMSPermissionsActivity in sms package -->
         <activity
-            android:name=".SMSPermissionsActivity"
-            android:exported="true"/>
+            android:name="com.example.inventory.sms.SMSPermissionsActivity"
+            android:exported="false" />
+
+
     </application>
 
 </manifest>

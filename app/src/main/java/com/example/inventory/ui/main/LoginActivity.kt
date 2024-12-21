@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.inventory.R
 import com.example.inventory.ui.overview.OverviewActivity
 
-class MainActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
 
