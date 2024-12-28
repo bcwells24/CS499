@@ -5,9 +5,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.lifecycleScope
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.inventory.R
 import com.example.inventory.data.model.Item
 import kotlinx.coroutines.launch
@@ -36,8 +35,8 @@ class AddItemActivity : AppCompatActivity() {
     }
 
     private fun addItemToInventory() {
-        val itemName = itemNameEditText.text.toString()
-        val quantityStr = itemQuantityEditText.text.toString()
+        val itemName = itemNameEditText.text.toString().trim()
+        val quantityStr = itemQuantityEditText.text.toString().trim()
 
         if (itemName.isBlank() || quantityStr.isBlank()) {
             Toast.makeText(this, "Please enter both name and quantity", Toast.LENGTH_SHORT).show()
@@ -45,28 +44,31 @@ class AddItemActivity : AppCompatActivity() {
         }
 
         val quantity = quantityStr.toIntOrNull()
-        if (quantity == null) {
+        if (quantity == null || quantity < 0) {
             Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
             return
         }
 
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        // We can check if item already exists by name, or just insert.
-        // For demonstration, we’ll just add the item.
-        val newItem = Item(name = itemName, quantity = quantity, dateAdded = currentDate)
-        overviewViewModel.viewModelScope.launch {
-            val existingItem = overviewViewModel.allItems.value.find { it.name == itemName }
-            if (existingItem != null) {
-                overviewViewModel.updateItemQuantity(existingItem, existingItem.quantity + quantity)
-                Toast.makeText(this@AddItemActivity, "Item quantity updated", Toast.LENGTH_SHORT).show()
-            } else {
-                // In a real scenario, you'd call repository.addItem(...) from the VM
-                // to keep consistent with the MVVM approach
-                overviewViewModel.updateItemQuantity(newItem, newItem.quantity)
-                Toast.makeText(this@AddItemActivity, "Item added successfully", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            overviewViewModel.getItemByName(itemName) { existingItem ->
+                if (existingItem != null) {
+                    // Replace the existing quantity with the new quantity
+                    val updatedItem = existingItem.copy(quantity = quantity)
+                    overviewViewModel.updateItemQuantity(updatedItem, quantity)
+                    Toast.makeText(this@AddItemActivity, "Item quantity updated successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Add a new item if it doesn't already exist
+                    val newItem = Item(name = itemName, quantity = quantity, dateAdded = currentDate)
+                    overviewViewModel.addNewItem(newItem)
+                    Toast.makeText(this@AddItemActivity, "Item added successfully", Toast.LENGTH_SHORT).show()
+                }
+                finish()
             }
-            finish()
         }
     }
+
+
 }
+
