@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
-    android:background="?android:attr/windowBackground">
+    android:background="@color/background_color"
+    tools:context=".ui.overview.AddItemActivity">
 
     <!-- Screen Header -->
     <TextView
@@ -15,23 +16,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:fontFamily="monospace"
+        android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="Inventory+"
-        android:textSize="34sp"
+        android:textColor="@color/title_color"
+        android:textSize="32sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="30dp" />
+        android:layout_marginBottom="16dp" />
 
     <!-- Screen Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add/Update Item"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="@color/title_color"
         android:layout_marginBottom="24dp" />
 
     <!-- Item Name Input -->
@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:text="Item Name"
         android:textSize="16sp"
+        android:textColor="@color/text_color"
         android:layout_marginBottom="8dp" />
 
     <EditText
@@ -49,7 +50,9 @@
         android:hint="Enter item name"
         android:inputType="text"
         android:padding="12dp"
-        android:background="@android:drawable/editbox_background" />
+        android:background="@drawable/edit_text_background"
+        android:textColor="@color/text_color"
+        android:textColorHint="@color/hint_color" />
 
     <!-- Quantity Input -->
     <TextView
@@ -57,6 +60,7 @@
         android:layout_height="wrap_content"
         android:text="Quantity"
         android:textSize="16sp"
+        android:textColor="@color/text_color"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp" />
 
@@ -67,7 +71,9 @@
         android:hint="Enter quantity"
         android:inputType="number"
         android:padding="12dp"
-        android:background="@android:drawable/editbox_background" />
+        android:background="@drawable/edit_text_background"
+        android:textColor="@color/text_color"
+        android:textColorHint="@color/hint_color" />
 
     <!-- Save Button -->
     <Button
@@ -75,8 +81,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save/Update Item"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/button_bg"
         android:layout_marginTop="24dp"
         android:padding="12dp"
         android:onClick="onSaveItemClick" />
-
 </LinearLayout>

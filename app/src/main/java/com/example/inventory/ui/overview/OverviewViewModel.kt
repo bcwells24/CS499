@@ -2,7 +2,6 @@ package com.example.inventory.ui.overview
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventory.data.local.InventoryDatabase
 import com.example.inventory.data.model.Item
@@ -13,8 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 class OverviewViewModel(application: Application) : AndroidViewModel(application) {
 

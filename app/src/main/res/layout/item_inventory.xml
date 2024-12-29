@@ -1,59 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="@color/input_bg"
+    android:gravity="center_vertical">
 
+    <!-- Item Name -->
     <TextView
         android:id="@+id/itemName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|start"
         android:text="itemName"
-        android:textSize="16sp" />
+        android:textColor="@color/text_color"
+        android:textSize="16sp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp" />
 
+    <!-- Item Quantity -->
     <TextView
         android:id="@+id/itemQuantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="center|left"
-        android:text="0" />
+        android:gravity="center_vertical|center"
+        android:text="0"
+        android:textColor="@color/text_color"
+        android:textSize="16sp" />
 
+    <!-- Item Date Added -->
     <TextView
         android:id="@+id/itemDateAdded"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="center|left"
-        android:text="0" />
+        android:gravity="center_vertical|center"
+        android:text="0"
+        android:textColor="@color/text_color"
+        android:textSize="16sp" />
 
+    <!-- Add Quantity Button -->
     <ImageButton
         android:id="@+id/buttonAddQuantity"
         android:layout_width="33dp"
         android:layout_height="33dp"
-        android:background="@android:color/holo_green_light"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Add Quantity"
-        android:scaleType="fitCenter"
+        app:tint="@android:color/holo_green_dark"
         android:src="@android:drawable/arrow_up_float" />
 
+    <!-- Subtract Quantity Button -->
     <ImageButton
         android:id="@+id/buttonSubtractQuantity"
         android:layout_width="33dp"
         android:layout_height="33dp"
-        android:background="@android:color/system_error_light"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Subtract Quantity"
-        android:scaleType="fitCenter"
+        app:tint="@android:color/holo_red_dark"
         android:src="@android:drawable/arrow_down_float" />
 
+    <!-- Delete Item Button -->
     <ImageButton
         android:id="@+id/buttonDeleteItem"
         android:layout_width="33dp"
         android:layout_height="33dp"
-        android:background="?attr/selectableItemBackground"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Delete Item"
-        android:scaleType="fitCenter"
+        app:tint="@android:color/holo_orange_dark"
         android:src="@android:drawable/ic_menu_delete" />
 </LinearLayout>
