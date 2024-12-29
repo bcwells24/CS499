@@ -71,6 +71,7 @@ class OverviewActivity : AppCompatActivity() {
 
         sortButton.setOnClickListener {
             overviewViewModel.toggleSortOrder()
+            //recyclerView.scrollToPosition(0) // Scroll to the top
         }
         closeCardButton.setOnClickListener {
             itemDetailCard.visibility = View.GONE
