@@ -20,7 +20,8 @@
         android:textColor="@color/text_color"
         android:textSize="16sp"
         android:paddingStart="4dp"
-        android:paddingEnd="4dp" />
+        android:paddingEnd="4dp"
+        tools:ignore="HardcodedText" />
 
     <!-- Item Quantity -->
     <TextView
@@ -31,7 +32,8 @@
         android:gravity="center_vertical|center"
         android:text="0"
         android:textColor="@color/text_color"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:ignore="HardcodedText" />
 
     <!-- Item Date Added -->
     <TextView
@@ -42,35 +44,39 @@
         android:gravity="center_vertical|center"
         android:text="0"
         android:textColor="@color/text_color"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:ignore="HardcodedText" />
 
     <!-- Add Quantity Button -->
     <ImageButton
         android:id="@+id/buttonAddQuantity"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Add Quantity"
         app:tint="@android:color/holo_green_dark"
-        android:src="@android:drawable/arrow_up_float" />
+        android:src="@android:drawable/arrow_up_float"
+        tools:ignore="HardcodedText" />
 
     <!-- Subtract Quantity Button -->
     <ImageButton
         android:id="@+id/buttonSubtractQuantity"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Subtract Quantity"
         app:tint="@android:color/holo_red_dark"
-        android:src="@android:drawable/arrow_down_float" />
+        android:src="@android:drawable/arrow_down_float"
+        tools:ignore="HardcodedText" />
 
     <!-- Delete Item Button -->
     <ImageButton
         android:id="@+id/buttonDeleteItem"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Delete Item"
         app:tint="@android:color/holo_orange_dark"
-        android:src="@android:drawable/ic_menu_delete" />
+        android:src="@android:drawable/ic_menu_delete"
+        tools:ignore="HardcodedText" />
 </LinearLayout>

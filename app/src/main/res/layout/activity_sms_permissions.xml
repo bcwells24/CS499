@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -16,7 +17,8 @@
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="@color/title_color"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        tools:ignore="HardcodedText" />
 
     <!-- EditText for the phone number -->
     <EditText
@@ -29,7 +31,8 @@
         android:padding="12dp"
         android:background="@drawable/edit_text_background"
         android:textColor="@color/text_color"
-        android:textColorHint="@color/hint_color" />
+        android:textColorHint="@color/hint_color"
+        tools:ignore="HardcodedText" />
 
     <!-- Toggle Button for enabling/disabling SMS notifications -->
     <ToggleButton
@@ -39,7 +42,8 @@
         android:textOn="Notifications ON"
         android:textOff="Notifications OFF"
         android:background="@drawable/toggle_button_background"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        tools:ignore="HardcodedText" />
 
     <!-- TextView to show the current SMS permission status -->
     <TextView
@@ -49,7 +53,8 @@
         android:text="Permission Status: Unknown"
         android:textSize="16sp"
         android:textColor="@color/text_color"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        tools:ignore="HardcodedText" />
 
     <!-- Button to return user to the previous screen -->
     <ImageButton
@@ -60,7 +65,8 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@android:drawable/ic_menu_revert"
         android:contentDescription="Return"
-        app:tint="@color/button_bg" />
+        app:tint="@color/button_bg"
+        tools:ignore="HardcodedText" />
 
     <!-- Logout Button -->
     <Button
@@ -72,5 +78,6 @@
         android:text="Logout"
         android:textColor="@color/button_bg"
         android:backgroundTint="@color/input_bg"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        tools:ignore="HardcodedText" />
 </LinearLayout>

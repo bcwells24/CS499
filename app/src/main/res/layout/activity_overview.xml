@@ -25,7 +25,8 @@
             android:text="Inventory+"
             android:textColor="@color/title_color"
             android:textSize="28sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/settingsButton"
@@ -34,7 +35,9 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:src="@android:drawable/ic_menu_manage"
-            app:tint="@color/button_bg" />
+            android:contentDescription="Settings"
+            app:tint="@color/button_bg"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <!-- Search Bar -->
@@ -53,11 +56,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@null"
             android:hint="Search items"
+            android:padding="8dp"
             android:textColor="@color/text_color"
             android:textColorHint="@color/hint_color"
-            android:background="@null"
-            android:padding="8dp" />
+            tools:ignore="HardcodedText,TouchTargetSizeCheck" />
 
         <Button
             android:id="@+id/searchButton"
@@ -66,7 +70,8 @@
             android:text="Search"
             android:textColor="@android:color/white"
             android:backgroundTint="@color/button_bg"
-            android:padding="8dp" />
+            android:padding="8dp"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <!-- Table Header -->
@@ -84,7 +89,8 @@
             android:gravity="start"
             android:text="Item"
             android:textColor="@color/title_color"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:layout_width="0dp"
@@ -93,7 +99,8 @@
             android:gravity="center"
             android:text="Quantity"
             android:textColor="@color/title_color"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:layout_width="0dp"
@@ -102,7 +109,8 @@
             android:gravity="center"
             android:text="Date Added"
             android:textColor="@color/title_color"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:layout_width="0dp"
@@ -111,7 +119,8 @@
             android:gravity="center"
             android:text="Actions"
             android:textColor="@color/title_color"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <!-- Inventory List -->
@@ -134,5 +143,6 @@
         android:text="Add or Update Item"
         android:textColor="@android:color/white"
         android:backgroundTint="@color/button_bg"
-        android:padding="8dp" />
+        android:padding="8dp"
+        tools:ignore="HardcodedText" />
 </LinearLayout>
