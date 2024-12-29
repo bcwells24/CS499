@@ -9,7 +9,8 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,6 +21,7 @@ import com.example.inventory.R
 import com.example.inventory.sms.SMSPermissionsActivity
 import com.example.inventory.ui.overview.adapter.InventoryAdapter
 import kotlinx.coroutines.flow.collectLatest
+import com.example.inventory.data.model.Item
 
 class OverviewActivity : AppCompatActivity() {
 
@@ -30,6 +32,14 @@ class OverviewActivity : AppCompatActivity() {
     private lateinit var inventoryAdapter: InventoryAdapter
     private lateinit var searchEditText: EditText
     private lateinit var searchButton: Button
+    private lateinit var sortButton: ImageButton
+    private lateinit var itemDetailCard: View
+    private lateinit var itemDetailName: TextView
+    private lateinit var itemDetailQuantity: TextView
+    private lateinit var itemDetailDate: TextView
+    private lateinit var itemDetailNewQuantity: EditText
+    private lateinit var updateQuantityButton: Button
+    private lateinit var closeCardButton: ImageButton
 
     companion object {
         private const val REQUEST_SMS_PERMISSION = 123
@@ -43,15 +53,33 @@ class OverviewActivity : AppCompatActivity() {
         settingsButton = findViewById(R.id.settingsButton)
         searchEditText = findViewById(R.id.searchEditText)
         searchButton = findViewById(R.id.searchButton)
+        sortButton = findViewById(R.id.sortButton)
+        // Card references
+        itemDetailCard = findViewById(R.id.itemDetailCard)
+        itemDetailName = findViewById(R.id.itemDetailName)
+        itemDetailQuantity = findViewById(R.id.itemDetailQuantity)
+        itemDetailDate = findViewById(R.id.itemDetailDate)
+        itemDetailNewQuantity = findViewById(R.id.itemDetailNewQuantity)
+        updateQuantityButton = findViewById(R.id.updateQuantityButton)
+        closeCardButton = findViewById(R.id.closeCardButton)
+
 
         setupRecyclerView()
         setupListeners()
         observeItems()
         setupSearchFunctionality()
+
+        sortButton.setOnClickListener {
+            overviewViewModel.toggleSortOrder()
+        }
+        closeCardButton.setOnClickListener {
+            itemDetailCard.visibility = View.GONE
+        }
     }
 
     private fun setupRecyclerView() {
         inventoryAdapter = InventoryAdapter(
+            onItemClicked = { item -> showItemDetails(item) },
             onQuantityUpdate = { item, newQuantity ->
                 overviewViewModel.updateItemQuantity(item, newQuantity)
                 if (newQuantity == 0) {
@@ -68,8 +96,23 @@ class OverviewActivity : AppCompatActivity() {
         recyclerView.adapter = inventoryAdapter
     }
 
+    private fun showItemDetails(item: Item) {
+        itemDetailCard.visibility = View.VISIBLE
+        itemDetailName.text = item.name
+        itemDetailQuantity.text = "Quantity: ${item.quantity}"
+        itemDetailDate.text = "Date Added: ${item.dateAdded}"
 
-
+        updateQuantityButton.setOnClickListener {
+            val newQuantity = itemDetailNewQuantity.text.toString().toIntOrNull()
+            if (newQuantity != null && newQuantity >= 0) {
+                overviewViewModel.updateItemQuantity(item, newQuantity)
+                Toast.makeText(this, "Quantity updated", Toast.LENGTH_SHORT).show()
+                itemDetailCard.visibility = View.GONE
+            } else {
+                Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     private fun setupListeners() {
         addItemButton.setOnClickListener {

@@ -1,11 +1,9 @@
 package com.example.inventory.data.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "users")
 data class User(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val username: String,
-    val password: String
-)
+    val username: String = "", // Default values to avoid nulls
+    val password: String = ""
+) {
+    // No-argument constructor for Firestore
+    constructor() : this("", "")
+}

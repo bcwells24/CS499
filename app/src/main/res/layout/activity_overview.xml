@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_weight="2"
     android:background="@color/background_color"
     android:orientation="vertical"
     android:padding="16dp"
@@ -12,8 +13,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/inventoryTitle"
@@ -33,9 +34,9 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Settings"
             android:padding="8dp"
             android:src="@android:drawable/ic_menu_manage"
-            android:contentDescription="Settings"
             app:tint="@color/button_bg"
             tools:ignore="HardcodedText" />
     </LinearLayout>
@@ -46,10 +47,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        android:padding="8dp"
         android:background="@color/input_bg"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <EditText
             android:id="@+id/searchEditText"
@@ -67,10 +68,10 @@
             android:id="@+id/searchButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search"
-            android:textColor="@android:color/white"
             android:backgroundTint="@color/button_bg"
             android:padding="8dp"
+            android:text="Search"
+            android:textColor="@android:color/white"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -83,13 +84,25 @@
         android:padding="8dp">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_width="20dp"
+            android:layout_height="29dp"
+            android:layout_weight=".5"
             android:gravity="start"
             android:text="Item"
             android:textColor="@color/title_color"
             android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <ImageButton
+            android:id="@+id/sortButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="Sort Items"
+            android:padding="2dp"
+            android:src="@android:drawable/ic_menu_sort_alphabetically"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -102,7 +115,7 @@
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
-        <TextView
+        <!-- <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -110,12 +123,12 @@
             android:text="Date Added"
             android:textColor="@color/title_color"
             android:textStyle="bold"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText" /> -->
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="center"
             android:text="Actions"
             android:textColor="@color/title_color"
@@ -123,13 +136,18 @@
             tools:ignore="HardcodedText" />
     </TableRow>
 
+    <!-- Include the item_detail layout -->
+    <include
+        layout="@layout/item_detail"
+        android:visibility="gone" />
+
     <!-- Inventory List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inventoryRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_marginTop="8dp"
+        android:layout_weight="1"
         android:scrollbars="vertical" />
 
     <!-- Add Item Button -->
@@ -140,9 +158,9 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Add or Update Item"
-        android:textColor="@android:color/white"
         android:backgroundTint="@color/button_bg"
         android:padding="8dp"
+        android:text="Add or Update Item"
+        android:textColor="@android:color/white"
         tools:ignore="HardcodedText" />
 </LinearLayout>

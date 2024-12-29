@@ -1,12 +1,12 @@
 package com.example.inventory.data.model
+import java.util.UUID
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "items")
 data class Item(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val name: String,
-    var quantity: Int,
-    val dateAdded: String
-)
+    val id: String = UUID.randomUUID().toString(), // Generate a unique ID for Firestore
+    val name: String = "",
+    var quantity: Int = 0,
+    val dateAdded: String = ""
+) {
+    // No-argument constructor for Firestore
+    constructor() : this("", "", 0, "")
+}
