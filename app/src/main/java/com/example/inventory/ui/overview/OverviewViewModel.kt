@@ -39,7 +39,7 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
     private fun observeRealTimeUpdates() {
         viewModelScope.launch {
             repository.observeAllItems().collect { items ->
-                _allItems.value = items
+                _allItems.value = items.sortedBy { it.name } // Sort by name
 
                 // Update itemMap for search functionality
                 itemMap.clear()
@@ -85,7 +85,8 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             val updatedItem = item.copy(quantity = newQuantity)
             repository.updateItem(updatedItem)
-            fetchAllItems() // Refresh the item list
+            applySortOrder()
+            //fetchAllItems() // Refresh the item list
         }
     }
 
@@ -110,9 +111,22 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
     val isAscending: StateFlow<Boolean> get() = _isAscending
 
     fun toggleSortOrder() {
-        _isAscending.value = !_isAscending.value
-        sortItems()
+        isSortedAscending = !isSortedAscending
+        _allItems.value = if (isSortedAscending) {
+            _allItems.value.sortedBy { it.name } // Sort ascending by name
+        } else {
+            _allItems.value.sortedByDescending { it.name } // Sort descending by name
+        }
     }
+    fun applySortOrder() {
+        _allItems.value = if (isSortedAscending) {
+            _allItems.value.sortedBy { it.name } // Apply ascending sort
+        } else {
+            _allItems.value.sortedByDescending { it.name } // Apply descending sort
+        }
+    }
+
+
 
     private fun sortItems() {
         val sortedList = if (_isAscending.value) {
@@ -122,5 +136,6 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
         }
         _allItems.value = sortedList
     }
+    private var isSortedAscending: Boolean = true
 
 }

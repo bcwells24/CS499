@@ -75,6 +75,8 @@ class OverviewActivity : AppCompatActivity() {
         }
         closeCardButton.setOnClickListener {
             itemDetailCard.visibility = View.GONE
+            // Reapply sort to maintain the user's selected sort order
+            overviewViewModel.applySortOrder()
         }
     }
 
