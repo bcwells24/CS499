@@ -6,78 +6,80 @@ import androidx.lifecycle.viewModelScope
 import com.example.inventory.data.model.Item
 import com.example.inventory.data.repository.InventoryRepository
 import com.example.inventory.sms.SMSManager
+import com.example.inventory.utils.heapSort // Import the heapSort utility
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.collect
 
 class OverviewViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = InventoryRepository()
-    private val itemMap = mutableMapOf<String, Item>() // HashMap for item storage
 
-    // Expose items as a StateFlow so UI can observe changes
+    // State management
     private val _allItems = MutableStateFlow<List<Item>>(emptyList())
     val allItems: StateFlow<List<Item>> get() = _allItems
 
+    private val itemMap = mutableMapOf<String, Item>() // For search functionality
+    var isSortedAscending = true // Sort state
+
     init {
-        fetchAllItems()
-        observeRealTimeUpdates()
+        observeRealTimeUpdates() // Setup real-time updates
     }
 
-    private fun fetchAllItems() {
-        viewModelScope.launch {
-            val items = repository.getAllItems()
-            itemMap.clear() // Clear and repopulate the HashMap
-            items.forEach { item ->
-                itemMap[item.name.lowercase()] = item // Case-insensitive keys
-            }
-            _allItems.value = items
-        }
-    }
-
+    // ----------------------------
+    // Real-Time Updates
+    // ----------------------------
     private fun observeRealTimeUpdates() {
         viewModelScope.launch {
             repository.observeAllItems().collect { items ->
-                _allItems.value = items.sortedBy { it.name } // Sort by name
-
-                // Update itemMap for search functionality
-                itemMap.clear()
-                items.forEach { item ->
-                    itemMap[item.name.lowercase()] = item
-                }
+                updateItemState(items)
             }
         }
     }
 
+    private fun updateItemState(items: List<Item>) {
+        // Convert items to mutable list for sorting
+        val mutableItems = items.toMutableList()
 
-    fun getItemByName(itemName: String, callback: (Item?) -> Unit) {
-        viewModelScope.launch {
-            val item = repository.getItemByName(itemName) // This calls the suspend function in the repository
-            callback(item) // Pass the result to the callback
+        // Use heapSort utility for sorting
+        heapSort(mutableItems) { item1, item2 ->
+            if (isSortedAscending) {
+                item1.name.compareTo(item2.name)
+            } else {
+                item2.name.compareTo(item1.name)
+            }
+        }
+
+        // Update state with sorted items
+        _allItems.value = mutableItems
+
+        // Update HashMap for search functionality
+        itemMap.clear()
+        mutableItems.forEach { item ->
+            itemMap[item.name.lowercase()] = item
         }
     }
 
-    fun searchItems(query: String): List<Item> {
-        val lowerCaseQuery = query.lowercase()
-
-        // Collect all items whose names contain the query
-        return itemMap.values.filter { it.name.lowercase().contains(lowerCaseQuery) }
-    }
-
-
-    fun addNewItem(item: Item) {
+    // ----------------------------
+    // Item Management
+    // ----------------------------
+    fun addOrUpdateItem(item: Item) {
         viewModelScope.launch {
             val existingItem = repository.getItemByName(item.name)
             if (existingItem != null) {
-                // If the item already exists, update its quantity
+                // Update item if it exists
                 val updatedItem = existingItem.copy(quantity = item.quantity)
                 repository.updateItem(updatedItem)
             } else {
-                // Otherwise, add it as a new item
+                // Add new item if it doesn't exist
                 repository.addItem(item)
             }
-            fetchAllItems() // Refresh the item list
+        }
+    }
+
+    fun deleteItem(item: Item) {
+        viewModelScope.launch {
+            repository.deleteItem(item)
         }
     }
 
@@ -85,20 +87,10 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             val updatedItem = item.copy(quantity = newQuantity)
             repository.updateItem(updatedItem)
-            applySortOrder()
-            //fetchAllItems() // Refresh the item list
-        }
-    }
-
-    fun deleteItem(item: Item) {
-        viewModelScope.launch {
-            repository.deleteItem(item)
-            fetchAllItems() // Refresh the item list
         }
     }
 
     fun sendZeroQuantitySms(itemName: String) {
-        // Get phone number and SMS permission from SharedPreferences (simplified)
         val prefs = getApplication<Application>().getSharedPreferences("SMSPrefs", 0)
         val smsEnabled = prefs.getBoolean("sms_permission", false)
         val phoneNumber = prefs.getString("phone_number", "")
@@ -107,35 +99,38 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
             SMSManager.sendSMS(phoneNumber, "Item: $itemName has reached zero quantity.")
         }
     }
-    private val _isAscending = MutableStateFlow(true) // True for ascending, false for descending
-    val isAscending: StateFlow<Boolean> get() = _isAscending
+
+    // ----------------------------
+    // Search and Sorting
+    // ----------------------------
+    fun searchItems(query: String): List<Item> {
+        val lowerCaseQuery = query.lowercase()
+
+        return itemMap.values.filter { item ->
+            val words = item.name.lowercase().split(" ") // Split the item name into words
+            words.any { word -> word.startsWith(lowerCaseQuery) } // Check if any word starts with the query
+        }
+    }
 
     fun toggleSortOrder() {
         isSortedAscending = !isSortedAscending
-        _allItems.value = if (isSortedAscending) {
-            _allItems.value.sortedBy { it.name } // Sort ascending by name
-        } else {
-            _allItems.value.sortedByDescending { it.name } // Sort descending by name
-        }
+        updateItemState(_allItems.value) // Reapply sorting using heapSort
     }
+    enum class SortOrder {
+        ASCENDING,
+        DESCENDING
+    }
+
+    private var currentSortOrder = SortOrder.ASCENDING
+
     fun applySortOrder() {
-        _allItems.value = if (isSortedAscending) {
-            _allItems.value.sortedBy { it.name } // Apply ascending sort
-        } else {
-            _allItems.value.sortedByDescending { it.name } // Apply descending sort
+        _allItems.value = when (currentSortOrder) {
+            SortOrder.ASCENDING -> _allItems.value.sortedBy { it.name.lowercase() }
+            SortOrder.DESCENDING -> _allItems.value.sortedByDescending { it.name.lowercase() }
         }
     }
 
 
 
-    private fun sortItems() {
-        val sortedList = if (_isAscending.value) {
-            _allItems.value.sortedBy { it.name.lowercase() }
-        } else {
-            _allItems.value.sortedByDescending { it.name.lowercase() }
-        }
-        _allItems.value = sortedList
-    }
-    private var isSortedAscending: Boolean = true
 
 }

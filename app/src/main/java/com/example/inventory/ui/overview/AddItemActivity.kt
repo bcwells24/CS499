@@ -53,25 +53,16 @@ class AddItemActivity : AppCompatActivity() {
         // Format the current date
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        // Check if the item already exists and handle accordingly
-        overviewViewModel.getItemByName(itemName) { existingItem ->
-            if (existingItem != null) {
-                // Update existing item's quantity
-                val updatedItem = existingItem.copy(quantity = quantity)
-                overviewViewModel.updateItemQuantity(updatedItem, quantity)
-                Toast.makeText(this, "Item updated successfully", Toast.LENGTH_SHORT).show()
-            } else {
-                // Add new item
-                val newItem = Item(
-                    id = UUID.randomUUID().toString(), // Generate a Firestore-compatible ID
-                    name = itemName,
-                    quantity = quantity,
-                    dateAdded = currentDate
-                )
-                overviewViewModel.addNewItem(newItem)
-                Toast.makeText(this, "Item added successfully", Toast.LENGTH_SHORT).show()
-            }
-            finish()
-        }
+        // Create or update the item
+        val newItem = Item(
+            id = UUID.randomUUID().toString(), // Firestore-compatible ID
+            name = itemName,
+            quantity = quantity,
+            dateAdded = currentDate
+        )
+
+        overviewViewModel.addOrUpdateItem(newItem) // Centralized logic in ViewModel
+        Toast.makeText(this, "Item saved successfully", Toast.LENGTH_SHORT).show()
+        finish()
     }
 }
