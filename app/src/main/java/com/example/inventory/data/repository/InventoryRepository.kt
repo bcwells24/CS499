@@ -17,9 +17,18 @@ class InventoryRepository {
     private val usersCollection = firestore.collection("users")
 
     // Flow of all items for real-time updates
-    val allItems: Flow<List<Item>> = flow {
-        val items = itemsCollection.get().await().documents.mapNotNull { it.toObject<Item>() }
-        emit(items)
+    val allItems: Flow<List<Item>> = callbackFlow {
+        val listener = itemsCollection.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                close(error)
+                return@addSnapshotListener
+            }
+
+            val items = snapshot?.toObjects(Item::class.java) ?: emptyList()
+            trySend(items)
+        }
+
+        awaitClose { listener.remove() }
     }
 
     suspend fun addItem(item: Item): Boolean {
@@ -34,13 +43,11 @@ class InventoryRepository {
 
     suspend fun getAllItems(): List<Item> {
         return try {
-            val querySnapshot = itemsCollection.get().await() // Fetch all items from Firestore
-            querySnapshot.documents.mapNotNull { document ->
-                document.toObject(Item::class.java) // Convert Firestore document to Item object
-            }
+            val querySnapshot = itemsCollection.get().await()
+            querySnapshot.toObjects(Item::class.java) // Simplified using KTX API
         } catch (e: Exception) {
             e.printStackTrace()
-            emptyList() // Return an empty list if there’s an error
+            emptyList()
         }
     }
     fun observeAllItems(): Flow<List<Item>> = callbackFlow {
@@ -63,7 +70,7 @@ class InventoryRepository {
     suspend fun getItemByName(name: String): Item? {
         return try {
             val querySnapshot = itemsCollection.whereEqualTo("name", name).get().await()
-            querySnapshot.documents.firstOrNull()?.toObject()
+            querySnapshot.documents.firstOrNull()?.toObject(Item::class.java) // Use KTX API
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -118,7 +125,7 @@ class InventoryRepository {
     suspend fun authenticateUser(username: String, password: String): Boolean {
         return try {
             val documentSnapshot = usersCollection.document(username).get().await()
-            val user = documentSnapshot.toObject<User>()
+            val user = documentSnapshot.toObject(User::class.java) // Use KTX API
             user?.password == password
         } catch (e: Exception) {
             e.printStackTrace()
