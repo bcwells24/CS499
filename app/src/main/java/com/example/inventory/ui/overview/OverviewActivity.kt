@@ -23,10 +23,14 @@ import com.example.inventory.ui.overview.adapter.InventoryAdapter
 import kotlinx.coroutines.flow.collectLatest
 import com.example.inventory.data.model.Item
 
+/**
+ * OverviewActivity displays the inventory list and allows users to interact with items.
+ */
 class OverviewActivity : AppCompatActivity() {
 
-    private val overviewViewModel: OverviewViewModel by viewModels()
+    private val overviewViewModel: OverviewViewModel by viewModels() // ViewModel for managing inventory
 
+    // UI elements
     private lateinit var addItemButton: Button
     private lateinit var settingsButton: ImageButton
     private lateinit var inventoryAdapter: InventoryAdapter
@@ -49,12 +53,12 @@ class OverviewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_overview)
 
+        // Initialize UI elements
         addItemButton = findViewById(R.id.addItemButton)
         settingsButton = findViewById(R.id.settingsButton)
         searchEditText = findViewById(R.id.searchEditText)
         searchButton = findViewById(R.id.searchButton)
         sortButton = findViewById(R.id.sortButton)
-        // Card references
         itemDetailCard = findViewById(R.id.itemDetailCard)
         itemDetailName = findViewById(R.id.itemDetailName)
         itemDetailQuantity = findViewById(R.id.itemDetailQuantity)
@@ -63,23 +67,26 @@ class OverviewActivity : AppCompatActivity() {
         updateQuantityButton = findViewById(R.id.updateQuantityButton)
         closeCardButton = findViewById(R.id.closeCardButton)
 
-
+        // Setup RecyclerView
         setupRecyclerView()
         setupListeners()
         observeItems()
         setupSearchFunctionality()
 
+        // Handle sorting
         sortButton.setOnClickListener {
             overviewViewModel.toggleSortOrder()
-            //recyclerView.scrollToPosition(0) // Scroll to the top
         }
+
+        // Handle closing the detail card
         closeCardButton.setOnClickListener {
             itemDetailCard.visibility = View.GONE
-            // Reapply sort to maintain the user's selected sort order
-            overviewViewModel.applySortOrder()
         }
     }
 
+    /**
+     * Configures the RecyclerView with the InventoryAdapter.
+     */
     private fun setupRecyclerView() {
         inventoryAdapter = InventoryAdapter(
             onItemClicked = { item -> showItemDetails(item) },
@@ -99,6 +106,11 @@ class OverviewActivity : AppCompatActivity() {
         recyclerView.adapter = inventoryAdapter
     }
 
+    /**
+     * Displays item details in a card view.
+     *
+     * @param item The item whose details are displayed.
+     */
     private fun showItemDetails(item: Item) {
         itemDetailCard.visibility = View.VISIBLE
         itemDetailName.text = item.name
@@ -117,6 +129,9 @@ class OverviewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Configures listeners for buttons.
+     */
     private fun setupListeners() {
         addItemButton.setOnClickListener {
             startActivity(Intent(this, AddItemActivity::class.java))
@@ -127,6 +142,9 @@ class OverviewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Observes real-time updates of items using the ViewModel.
+     */
     private fun observeItems() {
         lifecycleScope.launchWhenStarted {
             overviewViewModel.allItems.collectLatest { items ->
@@ -135,6 +153,9 @@ class OverviewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Configures search functionality for filtering items.
+     */
     private fun setupSearchFunctionality() {
         searchButton.setOnClickListener {
             val query = searchEditText.text.toString().lowercase().trim()
@@ -146,6 +167,11 @@ class OverviewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Filters items in the adapter based on a search query.
+     *
+     * @param query The search term.
+     */
     private fun performSearch(query: String) {
         val searchResults = overviewViewModel.searchItems(query)
         if (searchResults.isNotEmpty()) {
@@ -155,7 +181,9 @@ class OverviewActivity : AppCompatActivity() {
         }
     }
 
-
+    /**
+     * Resets the item list to show all items.
+     */
     private fun resetSearch() {
         lifecycleScope.launchWhenStarted {
             overviewViewModel.allItems.collectLatest { items ->
@@ -164,7 +192,11 @@ class OverviewActivity : AppCompatActivity() {
         }
     }
 
-
+    /**
+     * Checks and requests SMS permission if needed.
+     *
+     * @param itemName The name of the item triggering the SMS.
+     */
     fun checkAndRequestSmsPermission(itemName: String) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS), REQUEST_SMS_PERMISSION)
@@ -173,10 +205,12 @@ class OverviewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Handles the result of SMS permission requests.
+     */
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_SMS_PERMISSION && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // If user grants SMS permission after prompt, re-check or proceed with sending SMS
             Toast.makeText(this, "SMS Permission Granted", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "SMS Permission Denied", Toast.LENGTH_SHORT).show()

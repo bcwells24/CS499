@@ -50,22 +50,6 @@ class InventoryRepository {
             emptyList()
         }
     }
-    fun observeAllItems(): Flow<List<Item>> = callbackFlow {
-        val listener = itemsCollection.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                close(error) // Close the Flow with the error
-                return@addSnapshotListener
-            }
-
-            val items = snapshot?.toObjects(Item::class.java) ?: emptyList()
-            trySend(items) // Emit the updated list of items
-        }
-
-        // Clean up the listener when the Flow is canceled
-        awaitClose { listener.remove() }
-    }
-
-
 
     suspend fun getItemByName(name: String): Item? {
         return try {
@@ -93,7 +77,6 @@ class InventoryRepository {
         }
     }
 
-
     suspend fun deleteItem(item: Item): Boolean {
         return try {
             val querySnapshot = itemsCollection.whereEqualTo("name", item.name).get().await()
@@ -110,11 +93,17 @@ class InventoryRepository {
         }
     }
 
-
     // User operations
-    suspend fun registerUser(user: User): Boolean {
+    suspend fun registerUser(username: String, password: String): Boolean {
         return try {
-            usersCollection.document(user.username).set(user).await()
+            // Encrypt the password
+            val encryptedPassword = User.encryptPassword(password)
+
+            // Create the User instance with the encrypted password
+            val user = User(username = username, encryptedPassword = encryptedPassword)
+
+            // Save the user object to Firestore
+            usersCollection.document(username).set(user).await()
             true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -122,15 +111,22 @@ class InventoryRepository {
         }
     }
 
+
     suspend fun authenticateUser(username: String, password: String): Boolean {
         return try {
             val documentSnapshot = usersCollection.document(username).get().await()
-            val user = documentSnapshot.toObject(User::class.java) // Use KTX API
-            user?.password == password
+            val user = documentSnapshot.toObject(User::class.java)
+
+            // Validate the password by decrypting the stored encrypted password
+            user?.let {
+                val decryptedPassword = User.decryptPassword(it.encryptedPassword)
+                decryptedPassword == password
+            } ?: false
         } catch (e: Exception) {
             e.printStackTrace()
             false
         }
     }
+
 
 }

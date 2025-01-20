@@ -11,6 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * OverviewViewModel provides inventory management operations such as adding,
+ * updating, deleting, and sorting items. It interacts with the repository and manages UI state.
+ */
 class OverviewViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = InventoryRepository()
@@ -26,19 +30,23 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
         observeRealTimeUpdates() // Setup real-time updates
     }
 
-    // ----------------------------
-    // Real-Time Updates
-    // ----------------------------
+    /**
+     * Observes real-time updates of inventory items from the repository.
+     */
     private fun observeRealTimeUpdates() {
         viewModelScope.launch {
-            repository.observeAllItems().collect { items ->
+            repository.allItems.collect { items ->
                 updateItemState(items)
             }
         }
     }
 
+    /**
+     * Updates the state of all items and applies sorting.
+     *
+     * @param items The updated list of items.
+     */
     private fun updateItemState(items: List<Item>) {
-        // Convert items to mutable list for sorting
         val mutableItems = items.toMutableList()
 
         // Use heapSort utility for sorting
@@ -50,39 +58,47 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
             }
         }
 
-        // Update state with sorted items
         _allItems.value = mutableItems
-
-        // Update HashMap for search functionality
         itemMap.clear()
         mutableItems.forEach { item ->
             itemMap[item.name.lowercase()] = item
         }
     }
 
-    // ----------------------------
-    // Item Management
-    // ----------------------------
+    /**
+     * Adds or updates an item in the inventory.
+     *
+     * @param item The item to be added or updated.
+     */
     fun addOrUpdateItem(item: Item) {
         viewModelScope.launch {
             val existingItem = repository.getItemByName(item.name)
             if (existingItem != null) {
-                // Update item if it exists
                 val updatedItem = existingItem.copy(quantity = item.quantity)
                 repository.updateItem(updatedItem)
             } else {
-                // Add new item if it doesn't exist
                 repository.addItem(item)
             }
         }
     }
 
+    /**
+     * Deletes an item from the inventory.
+     *
+     * @param item The item to be deleted.
+     */
     fun deleteItem(item: Item) {
         viewModelScope.launch {
             repository.deleteItem(item)
         }
     }
 
+    /**
+     * Updates the quantity of an item.
+     *
+     * @param item The item to be updated.
+     * @param newQuantity The new quantity value.
+     */
     fun updateItemQuantity(item: Item, newQuantity: Int) {
         viewModelScope.launch {
             val updatedItem = item.copy(quantity = newQuantity)
@@ -90,6 +106,11 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    /**
+     * Sends an SMS notification when an item's quantity reaches zero.
+     *
+     * @param itemName The name of the item triggering the notification.
+     */
     fun sendZeroQuantitySms(itemName: String) {
         val prefs = getApplication<Application>().getSharedPreferences("SMSPrefs", 0)
         val smsEnabled = prefs.getBoolean("sms_permission", false)
@@ -100,37 +121,26 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    // ----------------------------
-    // Search and Sorting
-    // ----------------------------
+    /**
+     * Filters items based on a search query.
+     *
+     * @param query The search term.
+     * @return A list of matching items.
+     */
     fun searchItems(query: String): List<Item> {
         val lowerCaseQuery = query.lowercase()
 
         return itemMap.values.filter { item ->
-            val words = item.name.lowercase().split(" ") // Split the item name into words
-            words.any { word -> word.startsWith(lowerCaseQuery) } // Check if any word starts with the query
+            val words = item.name.lowercase().split(" ")
+            words.any { word -> word.startsWith(lowerCaseQuery) }
         }
     }
 
+    /**
+     * Toggles the sorting order of the items and updates the state.
+     */
     fun toggleSortOrder() {
         isSortedAscending = !isSortedAscending
-        updateItemState(_allItems.value) // Reapply sorting using heapSort
+        updateItemState(_allItems.value)
     }
-    enum class SortOrder {
-        ASCENDING,
-        DESCENDING
-    }
-
-    private var currentSortOrder = SortOrder.ASCENDING
-
-    fun applySortOrder() {
-        _allItems.value = when (currentSortOrder) {
-            SortOrder.ASCENDING -> _allItems.value.sortedBy { it.name.lowercase() }
-            SortOrder.DESCENDING -> _allItems.value.sortedByDescending { it.name.lowercase() }
-        }
-    }
-
-
-
-
 }

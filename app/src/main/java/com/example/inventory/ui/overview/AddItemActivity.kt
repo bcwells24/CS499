@@ -11,10 +11,14 @@ import com.example.inventory.data.model.Item
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * AddItemActivity allows the user to add a new inventory item and save it to the database.
+ */
 class AddItemActivity : AppCompatActivity() {
 
-    private val overviewViewModel: OverviewViewModel by viewModels()
+    private val overviewViewModel: OverviewViewModel by viewModels() // ViewModel for managing items
 
+    // UI elements
     private lateinit var itemNameEditText: EditText
     private lateinit var itemQuantityEditText: EditText
     private lateinit var saveItemButton: Button
@@ -23,7 +27,7 @@ class AddItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_additem)
 
-        // Initialize views
+        // Initialize UI elements
         itemNameEditText = findViewById(R.id.itemNameEditText)
         itemQuantityEditText = findViewById(R.id.itemQuantityEditText)
         saveItemButton = findViewById(R.id.saveItemButton)
@@ -34,19 +38,22 @@ class AddItemActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Validates input fields and adds a new item to the inventory via the ViewModel.
+     */
     private fun addItemToInventory() {
         val itemName = itemNameEditText.text.toString().trim()
         val quantityStr = itemQuantityEditText.text.toString().trim()
 
         // Validate inputs
-        if (itemName.isBlank() || quantityStr.isBlank()) {
-            Toast.makeText(this, "Please enter both name and quantity", Toast.LENGTH_SHORT).show()
+        if (itemName.isBlank()) {
+            Toast.makeText(this, "Item name cannot be empty", Toast.LENGTH_SHORT).show()
             return
         }
 
         val quantity = quantityStr.toIntOrNull()
         if (quantity == null || quantity < 0) {
-            Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please enter a valid quantity", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -55,14 +62,14 @@ class AddItemActivity : AppCompatActivity() {
 
         // Create or update the item
         val newItem = Item(
-            id = UUID.randomUUID().toString(), // Firestore-compatible ID
+            id = UUID.randomUUID().toString(), // Generate Firestore-compatible ID
             name = itemName,
             quantity = quantity,
             dateAdded = currentDate
         )
 
-        overviewViewModel.addOrUpdateItem(newItem) // Centralized logic in ViewModel
-        Toast.makeText(this, "Item saved successfully", Toast.LENGTH_SHORT).show()
+        overviewViewModel.addOrUpdateItem(newItem) // Add item via ViewModel
+        Toast.makeText(this, "Item added successfully", Toast.LENGTH_SHORT).show()
         finish()
     }
 }

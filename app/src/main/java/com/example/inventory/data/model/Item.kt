@@ -1,4 +1,5 @@
 package com.example.inventory.data.model
+
 import java.util.UUID
 
 data class Item(
@@ -9,4 +10,16 @@ data class Item(
 ) {
     // No-argument constructor for Firestore
     constructor() : this("", "", 0, "")
+
+    init {
+        require(quantity >= 0) { "Quantity cannot be negative" }
+    }
+
+    /**
+     * Updates the quantity of the item. Ensures that the quantity remains non-negative.
+     */
+    fun updateQuantity(newQuantity: Int) {
+        require(newQuantity >= 0) { "Quantity cannot be negative" }
+        quantity = newQuantity
+    }
 }

@@ -12,6 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.inventory.R
 import com.example.inventory.data.model.Item
 
+/**
+ * InventoryAdapter handles displaying inventory items in a RecyclerView.
+ * It supports item interactions such as updating quantity and deleting items.
+ */
 class InventoryAdapter(
     private val onItemClicked: (Item) -> Unit,
     private val onQuantityUpdate: (Item, Int) -> Unit,
@@ -31,18 +35,24 @@ class InventoryAdapter(
         }
     }
 
+    /**
+     * ViewHolder class for managing individual inventory item views.
+     */
     inner class InventoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val itemName: TextView = itemView.findViewById(R.id.itemName)
         private val itemQuantity: TextView = itemView.findViewById(R.id.itemQuantity)
-        // private val itemDateAdded: TextView = itemView.findViewById(R.id.itemDateAdded)
         private val buttonAddQuantity: ImageButton = itemView.findViewById(R.id.buttonAddQuantity)
         private val buttonSubtractQuantity: ImageButton = itemView.findViewById(R.id.buttonSubtractQuantity)
         private val buttonDeleteItem: ImageButton = itemView.findViewById(R.id.buttonDeleteItem)
 
+        /**
+         * Binds the item data to the view and sets up listeners for user actions.
+         *
+         * @param item The inventory item to bind.
+         */
         fun bind(item: Item) {
             itemName.text = item.name
             itemQuantity.text = item.quantity.toString()
-            // itemDateAdded.text = item.dateAdded
 
             // Increment quantity
             buttonAddQuantity.setOnClickListener {

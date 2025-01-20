@@ -2,6 +2,7 @@ package com.example.inventory.utils
 
 /**
  * Utility function for sorting a mutable list using the Heap Sort algorithm.
+ *
  * @param list The list to be sorted.
  * @param comparator A lambda to define the sorting order.
  */
@@ -43,6 +44,7 @@ fun <T> heapSort(list: MutableList<T>, comparator: (T, T) -> Int) {
 
 /**
  * Extension function to swap two elements in a list.
+ *
  * @param i The index of the first element.
  * @param j The index of the second element.
  */
