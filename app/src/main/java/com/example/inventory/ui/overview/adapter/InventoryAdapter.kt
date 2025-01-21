@@ -130,3 +130,5 @@ class InventoryAdapter(
         }
     }
 }
+
+/** Reference: https://www.geeksforgeeks.org/diffutil-in-recyclerview-in-android/ */

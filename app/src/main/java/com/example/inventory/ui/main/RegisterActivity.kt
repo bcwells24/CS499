@@ -76,3 +76,5 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 }
+
+/** Reference: https://www.geeksforgeeks.org/user-authentication-using-firebase-in-android/ */

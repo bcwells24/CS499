@@ -15,3 +15,5 @@ data class Item(
         require(quantity >= 0) { "Quantity cannot be negative" }
     }
 }
+
+/** Reference: https://firebase.google.com/docs/firestore/manage-data/add-data */

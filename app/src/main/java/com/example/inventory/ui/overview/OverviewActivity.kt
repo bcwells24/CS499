@@ -217,3 +217,5 @@ class OverviewActivity : AppCompatActivity() {
         }
     }
 }
+
+/** Reference: https://developer.android.com/reference/android/app/Activity.html?hl=en */

@@ -48,3 +48,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 }
+
+/** Reference: https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel */

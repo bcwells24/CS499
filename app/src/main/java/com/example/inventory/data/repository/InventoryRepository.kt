@@ -163,3 +163,5 @@ class InventoryRepository {
         }
     }
 }
+
+/** Reference: https://firebase.google.com/docs/firestore/quickstart */

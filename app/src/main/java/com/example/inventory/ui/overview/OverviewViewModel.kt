@@ -144,3 +144,5 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
         updateItemState(_allItems.value)
     }
 }
+
+/** Reference: https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel */

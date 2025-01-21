@@ -86,4 +86,4 @@ data class User(
     }
 }
 
-/** https://firebase.google.com/docs/firestore/quickstart#kotlin */
+/** Reference: https://firebase.google.com/docs/firestore/quickstart#kotlin */

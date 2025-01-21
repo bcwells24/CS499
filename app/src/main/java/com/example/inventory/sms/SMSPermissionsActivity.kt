@@ -123,3 +123,5 @@ class SMSPermissionsActivity : AppCompatActivity() {
             if (isGranted) "Permission Status: Granted" else "Permission Status: Denied"
     }
 }
+
+/** Reference: https://stackoverflow.com/questions/50061698/sms-permissions */
