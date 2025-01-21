@@ -1,3 +1,5 @@
+package com.example.inventory.utils
+
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import java.security.KeyStore
@@ -5,7 +7,7 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
 /**
- * KeyStoreManager provides secure key management using the Android Keystore system.
+ * com.example.inventory.utils.KeyStoreManager provides secure key management using the Android Keystore system.
  */
 object KeyStoreManager {
     private const val ALIAS = "UserEncryptionKey" // Alias for the encryption key
@@ -49,3 +51,5 @@ object KeyStoreManager {
         return keyGenerator.generateKey()
     }
 }
+
+/** https://developer.android.com/privacy-and-security/keystore?hl=en */

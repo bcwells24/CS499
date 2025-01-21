@@ -14,12 +14,4 @@ data class Item(
     init {
         require(quantity >= 0) { "Quantity cannot be negative" }
     }
-
-    /**
-     * Updates the quantity of the item. Ensures that the quantity remains non-negative.
-     */
-    fun updateQuantity(newQuantity: Int) {
-        require(newQuantity >= 0) { "Quantity cannot be negative" }
-        quantity = newQuantity
-    }
 }

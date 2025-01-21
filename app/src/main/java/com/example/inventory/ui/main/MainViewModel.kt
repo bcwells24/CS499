@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventory.data.repository.InventoryRepository
-import com.example.inventory.data.model.User
 import kotlinx.coroutines.launch
 
 /**

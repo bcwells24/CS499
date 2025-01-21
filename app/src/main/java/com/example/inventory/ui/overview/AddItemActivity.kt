@@ -2,6 +2,7 @@ package com.example.inventory.ui.overview
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -22,6 +23,7 @@ class AddItemActivity : AppCompatActivity() {
     private lateinit var itemNameEditText: EditText
     private lateinit var itemQuantityEditText: EditText
     private lateinit var saveItemButton: Button
+    private lateinit var returnButton: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +33,14 @@ class AddItemActivity : AppCompatActivity() {
         itemNameEditText = findViewById(R.id.itemNameEditText)
         itemQuantityEditText = findViewById(R.id.itemQuantityEditText)
         saveItemButton = findViewById(R.id.saveItemButton)
+        returnButton = findViewById(R.id.returnButton)
 
-        // Set the save button listener
+        // Set the button listeners
         saveItemButton.setOnClickListener {
             addItemToInventory()
+        }
+        returnButton.setOnClickListener {
+            finish()
         }
     }
 

@@ -3,9 +3,7 @@ package com.example.inventory.data.repository
 import com.example.inventory.data.model.Item
 import com.example.inventory.data.model.User
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.channels.awaitClose
@@ -38,16 +36,6 @@ class InventoryRepository {
         } catch (e: Exception) {
             e.printStackTrace()
             false
-        }
-    }
-
-    suspend fun getAllItems(): List<Item> {
-        return try {
-            val querySnapshot = itemsCollection.get().await()
-            querySnapshot.toObjects(Item::class.java) // Simplified using KTX API
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
         }
     }
 

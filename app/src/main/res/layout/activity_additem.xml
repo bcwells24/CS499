@@ -93,4 +93,18 @@
         android:padding="12dp"
         tools:ignore="HardcodedText" />
         <!--android:onClick="onSaveItemClick" />  // Method not used -->
+
+    <!-- Button to return user to the previous screen -->
+    <ImageButton
+            android:id="@+id/returnButton"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginBottom="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_revert"
+            android:contentDescription="Return"
+            app:tint="@color/button_bg"
+            tools:ignore="HardcodedText" />
+
+
 </LinearLayout>

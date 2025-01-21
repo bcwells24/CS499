@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.inventory.data.model.Item
 import com.example.inventory.data.repository.InventoryRepository
 import com.example.inventory.sms.SMSManager
-import com.example.inventory.utils.heapSort // Import the heapSort utility
+import com.example.inventory.utils.heapSort
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
