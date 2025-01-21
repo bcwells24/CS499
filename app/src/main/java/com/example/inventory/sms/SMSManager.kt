@@ -36,11 +36,11 @@ object SMSManager {
             // Use SmsManager to send the SMS message
             SmsManager.getDefault().sendTextMessage(phoneNumber, null, message, null, null)
             Log.d(TAG, "SMS sent successfully to $phoneNumber")
-            true // Indicate success
+            true
         } catch (e: Exception) {
             // Log any exception that occurs during the sending process
             Log.e(TAG, "Failed to send SMS: ${e.message}", e)
-            false // Indicate failure
+            false
         }
     }
 }

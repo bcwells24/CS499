@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import java.text.NumberFormat
 import com.example.inventory.R
 import com.example.inventory.data.model.Item
 
@@ -75,7 +76,8 @@ class InventoryAdapter(
         fun bind(item: Item) {
             // Display item name and quantity
             itemName.text = item.name
-            itemQuantity.text = item.quantity.toString()
+            val formatter = NumberFormat.getInstance()
+            itemQuantity.text = formatter.format(item.quantity)
 
             // Set up click listener to increment the item's quantity
             buttonAddQuantity.setOnClickListener {

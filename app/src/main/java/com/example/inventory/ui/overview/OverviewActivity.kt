@@ -15,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.inventory.R
@@ -114,8 +117,9 @@ class OverviewActivity : AppCompatActivity() {
     private fun showItemDetails(item: Item) {
         itemDetailCard.visibility = View.VISIBLE
         itemDetailName.text = item.name
-        itemDetailQuantity.text = "Quantity: ${item.quantity}"
-        itemDetailDate.text = "Date Added: ${item.dateAdded}"
+        itemDetailQuantity.text = getString(R.string.quantity_text, item.quantity)
+        itemDetailDate.text = getString(R.string.date_added_text, item.dateAdded)
+
 
         updateQuantityButton.setOnClickListener {
             val newQuantity = itemDetailNewQuantity.text.toString().toIntOrNull()
@@ -146,9 +150,11 @@ class OverviewActivity : AppCompatActivity() {
      * Observes real-time updates of items using the ViewModel.
      */
     private fun observeItems() {
-        lifecycleScope.launchWhenStarted {
-            overviewViewModel.allItems.collectLatest { items ->
-                inventoryAdapter.submitList(items)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                overviewViewModel.allItems.collectLatest { items ->
+                    inventoryAdapter.submitList(items)
+                }
             }
         }
     }
@@ -185,9 +191,11 @@ class OverviewActivity : AppCompatActivity() {
      * Resets the item list to show all items.
      */
     private fun resetSearch() {
-        lifecycleScope.launchWhenStarted {
-            overviewViewModel.allItems.collectLatest { items ->
-                inventoryAdapter.submitList(items)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                overviewViewModel.allItems.collectLatest { items ->
+                    inventoryAdapter.submitList(items)
+                }
             }
         }
     }
