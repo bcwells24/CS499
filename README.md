@@ -2,7 +2,7 @@
 
 ## Overview
 This guide provides the steps needed to open, build, and run the **Android Inventory App** located 
-in the `CS499-WIP4` folder. The app is packaged in a `.zip` file titled `Android Inventory App.zip`. 
+in the `Inventory` folder. The app is packaged in a `.zip` file titled `Android Inventory App.zip`. 
 You will use **Android Studio (Ladybug)** to open and run the application.
 
 ---
@@ -28,12 +28,12 @@ Before running the application, ensure the following:
 1. Locate the file: `Android Inventory App.zip`.
 2. Extract the contents to a folder on your local machine.
 3. Navigate to the extracted folder and locate the project path:
-   `Android Inventory App/CS499-WIP4`.
+   `Android Inventory App/Inventory`.
 
 ### Step 2: Open the Project in Android Studio
 1. Launch **Android Studio (Ladybug)**.
 2. Select **File > Open** from the menu.
-3. Navigate to the `CS499-WIP4` folder and click OK.
+3. Navigate to the `Inventory` folder and click OK.
 4. Wait for Android Studio to load the project and sync the Gradle files.
 
 ### Step 3: Sync Gradle Files
@@ -80,7 +80,7 @@ Before running the application, ensure the following:
 
 ## Notes
 - Ensure you do not modify any core files in the project directory unless required.
-- For any issues not covered here, refer to the Android Studio documentation or contact the project maintainer.
+- For any issues not covered here, refer to the Android Studio documentation or contact the developer.
 
 ---
 
