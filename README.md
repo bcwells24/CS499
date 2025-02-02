@@ -56,6 +56,16 @@ Before running the application, ensure the following:
 3. Click the **Run** button (green triangle) or press **Shift + F10** to build and launch the app.
 4. Select your target device (emulator or physical device) and wait for the app to install and run.
 
+### Step 6: Test the App
+1. Register a user by entering a username and password.
+2. Login with the registered credentials.
+3. Test the CRUD (Create, Read, Update, Delete) operations by adding, updating, and deleting items.
+4. Test the sorting and filtering functionality.
+5. Test the search functionality.
+6. Test the item detail card.
+7. Test SMS functionality by enabling SMS notifications (enter phone number for emulator or physical device).
+8. Test Logout functionality.
+
 ---
 
 ## Common Issues and Fixes
