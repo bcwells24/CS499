@@ -90,6 +90,7 @@ Before running the application, ensure the following:
 
 ## Notes
 - Ensure you do not modify any core files in the project directory unless required.
+- If the project files have been downloaded from GitHub, contact the developer for the google-services.json file to connect with the Firestore Database.
 - For any issues not covered here, refer to the Android Studio documentation or contact the developer.
 
 ---
