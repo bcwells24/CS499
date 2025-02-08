@@ -1,12 +1,19 @@
 package com.example.inventory.data.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import java.util.UUID
 
-@Entity(tableName = "items")
 data class Item(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val name: String,
-    var quantity: Int,
-    val dateAdded: String
-)
+    val id: String = UUID.randomUUID().toString(), // Generate a unique ID for Firestore
+    val name: String = "",
+    var quantity: Int = 0,
+    val dateAdded: String = ""
+) {
+    // No-argument constructor for Firestore
+    constructor() : this("", "", 0, "")
+
+    init {
+        require(quantity >= 0) { "Quantity cannot be negative" }
+    }
+}
+
+/** Reference: https://firebase.google.com/docs/firestore/manage-data/add-data */

@@ -1,43 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- This application was originally created in CS-360 at SNHU by Brad Wells. -->
+<!-- Enhancements were made to this project throughout the CS-499 Course at SNHU -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.example.inventory"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
+
     <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/inventory_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/inventory_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Inventory"
         tools:targetApi="31">
+
+        <!-- LoginActivity in ui.main package -->
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.inventory.ui.main.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- RegisterActivity in ui.main package -->
         <activity
-            android:name=".RegisterActivity"
-            android:exported="true"/>
+            android:name="com.example.inventory.ui.main.RegisterActivity"
+            android:exported="false" />
+
+        <!-- OverviewActivity in ui.overview package -->
         <activity
-            android:name=".AddItemActivity"
-            android:exported="true"/>
+            android:name="com.example.inventory.ui.overview.OverviewActivity"
+            android:exported="false" />
+
+        <!-- AddItemActivity in ui.overview package -->
         <activity
-            android:name=".OverviewActivity"
-            android:exported="true"/>
+            android:name="com.example.inventory.ui.overview.AddItemActivity"
+            android:exported="false" />
+
+        <!-- SMSPermissionsActivity in sms package -->
         <activity
-            android:name=".SMSPermissionsActivity"
-            android:exported="true"/>
+            android:name="com.example.inventory.sms.SMSPermissionsActivity"
+            android:exported="false" />
+
+
     </application>
 
 </manifest>

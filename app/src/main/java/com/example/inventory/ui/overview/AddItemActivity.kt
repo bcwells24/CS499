@@ -2,6 +2,7 @@ package com.example.inventory.ui.overview
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -11,59 +12,72 @@ import com.example.inventory.data.model.Item
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * AddItemActivity allows the user to add a new inventory item and save it to the database.
+ */
 class AddItemActivity : AppCompatActivity() {
 
-    private val overviewViewModel: OverviewViewModel by viewModels()
+    private val overviewViewModel: OverviewViewModel by viewModels() // ViewModel for managing items
 
+    // UI elements
     private lateinit var itemNameEditText: EditText
     private lateinit var itemQuantityEditText: EditText
     private lateinit var saveItemButton: Button
+    private lateinit var returnButton: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_additem)
 
+        // Initialize UI elements
         itemNameEditText = findViewById(R.id.itemNameEditText)
         itemQuantityEditText = findViewById(R.id.itemQuantityEditText)
         saveItemButton = findViewById(R.id.saveItemButton)
+        returnButton = findViewById(R.id.returnButton)
 
+        // Set the button listeners
         saveItemButton.setOnClickListener {
             addItemToInventory()
         }
+        returnButton.setOnClickListener {
+            finish()
+        }
     }
 
+    /**
+     * Validates input fields and adds a new item to the inventory via the ViewModel.
+     */
     private fun addItemToInventory() {
-        val itemName = itemNameEditText.text.toString()
-        val quantityStr = itemQuantityEditText.text.toString()
+        val itemName = itemNameEditText.text.toString().trim()
+        val quantityStr = itemQuantityEditText.text.toString().trim()
 
-        if (itemName.isBlank() || quantityStr.isBlank()) {
-            Toast.makeText(this, "Please enter both name and quantity", Toast.LENGTH_SHORT).show()
+        // Validate inputs
+        if (itemName.isBlank()) {
+            Toast.makeText(this, "Item name cannot be empty", Toast.LENGTH_SHORT).show()
             return
         }
 
         val quantity = quantityStr.toIntOrNull()
-        if (quantity == null) {
-            Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
+        if (quantity == null || quantity < 0) {
+            Toast.makeText(this, "Please enter a valid quantity", Toast.LENGTH_SHORT).show()
             return
         }
 
+        // Format the current date
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        // We can check if item already exists by name, or just insert.
-        // For demonstration, we’ll just add the item.
-        val newItem = Item(name = itemName, quantity = quantity, dateAdded = currentDate)
-        overviewViewModel.viewModelScope.launchWhenStarted {
-            val existingItem = overviewViewModel.allItems.value.find { it.name == itemName }
-            if (existingItem != null) {
-                overviewViewModel.updateItemQuantity(existingItem, existingItem.quantity + quantity)
-                Toast.makeText(this@AddItemActivity, "Item quantity updated", Toast.LENGTH_SHORT).show()
-            } else {
-                // In a real scenario, you'd call repository.addItem(...) from the VM
-                // to keep consistent with the MVVM approach
-                overviewViewModel.updateItemQuantity(newItem, newItem.quantity)
-                Toast.makeText(this@AddItemActivity, "Item added successfully", Toast.LENGTH_SHORT).show()
-            }
-            finish()
-        }
+        // Create or update the item
+        val newItem = Item(
+            id = UUID.randomUUID().toString(), // Generate Firestore-compatible ID
+            name = itemName,
+            quantity = quantity,
+            dateAdded = currentDate
+        )
+
+        overviewViewModel.addOrUpdateItem(newItem) // Add item via ViewModel
+        Toast.makeText(this, "Item added successfully", Toast.LENGTH_SHORT).show()
+        finish()
     }
 }
+
+/** Reference: https://developer.android.com/reference/android/app/Activity.html?hl=en */

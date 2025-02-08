@@ -1,83 +1,156 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/windowBackground"
+    android:layout_weight="2"
+    android:background="@color/background_color"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".ui.overview.OverviewActivity">
 
-    <!-- Screen Title -->
-
-    <ImageButton
-        android:id="@+id/settingsButton"
-        android:layout_width="77dp"
+    <!-- Screen Title with Settings Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:backgroundTint="#673AB7"
-        app:srcCompat="@android:drawable/ic_menu_manage" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/inventoryTitle"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/inventoryTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start"
+            android:text="Inventory+"
+            android:textColor="@color/title_color"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Settings"
+            android:padding="8dp"
+            android:src="@android:drawable/ic_menu_manage"
+            app:tint="@color/button_bg"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <!-- Search Bar -->
+    <LinearLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:fontFamily="monospace"
-        android:gravity="center"
-        android:text="Inventory+"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:layout_marginTop="16dp"
+        android:background="@color/input_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="Search items"
+            android:padding="8dp"
+            android:textColor="@color/text_color"
+            android:textColorHint="@color/hint_color"
+            tools:ignore="HardcodedText,TouchTargetSizeCheck" />
+
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/button_bg"
+            android:padding="8dp"
+            android:text="Search"
+            android:textColor="@android:color/white"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <!-- Table Header -->
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:background="#E0E0E0"
-        android:gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="@color/input_bg"
         android:padding="8dp">
 
         <TextView
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="left"
+            android:layout_width="20dp"
+            android:layout_height="29dp"
+            android:layout_weight=".5"
+            android:gravity="start"
             android:text="Item"
-            android:textStyle="bold" />
+            android:textColor="@color/title_color"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <ImageButton
+            android:id="@+id/sortButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="Sort Items"
+            android:padding="2dp"
+            android:src="@android:drawable/ic_menu_sort_alphabetically"
+            tools:ignore="HardcodedText" />
 
         <TextView
-            android:layout_width="35dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="center"
             android:text="Quantity"
-            android:textStyle="bold" />
+            android:textColor="@color/title_color"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
-        <TextView
-            android:layout_width="50dp"
+        <!-- <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Date Added"
-            android:textStyle="bold" />
+            android:textColor="@color/title_color"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" /> -->
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="center"
             android:text="Actions"
-            android:textStyle="bold" />
+            android:textColor="@color/title_color"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
+    <!-- Include the item_detail layout -->
+    <include
+        layout="@layout/item_detail"
+        android:visibility="gone" />
+
+    <!-- Inventory List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inventoryRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="1"
-        android:scrollbars="vertical"
-        android:outlineAmbientShadowColor="#020202" />
+        android:scrollbars="vertical" />
 
+    <!-- Add Item Button -->
     <Button
         android:id="@+id/addItemButton"
         android:layout_width="wrap_content"
@@ -85,6 +158,9 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Add New Item or Update Item" />
-
+        android:backgroundTint="@color/button_bg"
+        android:padding="8dp"
+        android:text="Add or Update Item"
+        android:textColor="@android:color/white"
+        tools:ignore="HardcodedText" />
 </LinearLayout>

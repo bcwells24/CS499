@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
-    android:background="?android:attr/windowBackground">
+    android:background="@color/background_color"
+    tools:context=".ui.overview.AddItemActivity">
 
     <!-- Screen Header -->
     <TextView
@@ -15,24 +16,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:fontFamily="monospace"
+        android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="Inventory+"
-        android:textSize="34sp"
+        android:textColor="@color/title_color"
+        android:textSize="32sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="30dp" />
+        android:layout_marginBottom="16dp"
+        tools:ignore="HardcodedText" />
 
     <!-- Screen Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add/Update Item"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginBottom="24dp" />
+        android:textColor="@color/title_color"
+        android:layout_marginBottom="24dp"
+        tools:ignore="HardcodedText" />
 
     <!-- Item Name Input -->
     <TextView
@@ -40,7 +42,9 @@
         android:layout_height="wrap_content"
         android:text="Item Name"
         android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+        android:textColor="@color/text_color"
+        android:layout_marginBottom="8dp"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/itemNameEditText"
@@ -49,7 +53,10 @@
         android:hint="Enter item name"
         android:inputType="text"
         android:padding="12dp"
-        android:background="@android:drawable/editbox_background" />
+        android:background="@drawable/edit_text_background"
+        android:textColor="@color/text_color"
+        android:textColorHint="@color/hint_color"
+        tools:ignore="HardcodedText" />
 
     <!-- Quantity Input -->
     <TextView
@@ -57,8 +64,10 @@
         android:layout_height="wrap_content"
         android:text="Quantity"
         android:textSize="16sp"
+        android:textColor="@color/text_color"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/itemQuantityEditText"
@@ -67,7 +76,10 @@
         android:hint="Enter quantity"
         android:inputType="number"
         android:padding="12dp"
-        android:background="@android:drawable/editbox_background" />
+        android:background="@drawable/edit_text_background"
+        android:textColor="@color/text_color"
+        android:textColorHint="@color/hint_color"
+        tools:ignore="HardcodedText" />
 
     <!-- Save Button -->
     <Button
@@ -75,8 +87,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save/Update Item"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/button_bg"
         android:layout_marginTop="24dp"
         android:padding="12dp"
-        android:onClick="onSaveItemClick" />
+        tools:ignore="HardcodedText" />
+        <!--android:onClick="onSaveItemClick" />  // Method not used -->
+
+    <!-- Button to return user to the previous screen -->
+    <ImageButton
+            android:id="@+id/returnButton"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginBottom="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_revert"
+            android:contentDescription="Return"
+            app:tint="@color/button_bg"
+            tools:ignore="HardcodedText" />
+
 
 </LinearLayout>
