@@ -14,12 +14,13 @@ import com.example.inventory.R
 import com.example.inventory.data.model.Item
 
 /**
- * InventoryAdapter handles displaying a list of inventory items in a RecyclerView.
- * It supports user interactions such as updating item quantities and deleting items.
+ * InventoryAdapter is responsible for displaying a list of inventory items in a RecyclerView.
+ * It supports incrementing, decrementing, and deleting items, and notifies external
+ * callbacks about these actions so that data can be updated accordingly.
  *
- * @param onItemClicked Callback for when an item is clicked.
- * @param onQuantityUpdate Callback for updating the item's quantity.
- * @param onDeleteItem Callback for deleting an item.
+ * @param onItemClicked     Callback invoked when an item is clicked.
+ * @param onQuantityUpdate  Callback for updating the item's quantity.
+ * @param onDeleteItem      Callback for deleting an item.
  */
 class InventoryAdapter(
     private val onItemClicked: (Item) -> Unit,
@@ -28,11 +29,10 @@ class InventoryAdapter(
 ) : ListAdapter<Item, InventoryAdapter.InventoryViewHolder>(DIFF_CALLBACK) {
 
     /**
-     * Called to create a new ViewHolder when there are no existing ViewHolders available for reuse.
+     * Inflates the item layout and creates a new ViewHolder to manage it.
      *
-     * @param parent The parent ViewGroup in which the new ViewHolder will be created.
-     * @param viewType The type of the new ViewHolder.
-     * @return A new instance of InventoryViewHolder.
+     * @param parent   The parent ViewGroup in which the new ViewHolder will be added.
+     * @param viewType The type of view. (Not used directly here; always 0 by default.)
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InventoryViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_inventory, parent, false)
@@ -40,92 +40,82 @@ class InventoryAdapter(
     }
 
     /**
-     * Called to bind data to a ViewHolder at a specific position.
+     * Binds a specific item from the list to the given ViewHolder.
      *
-     * @param holder The ViewHolder to bind data to.
-     * @param position The position of the item in the adapter.
+     * @param holder   The ViewHolder that manages the item layout.
+     * @param position The position of the item within the list.
      */
     override fun onBindViewHolder(holder: InventoryViewHolder, position: Int) {
-        val item = getItem(position) // Retrieve the item at the current position
-        holder.bind(item) // Bind the item data to the ViewHolder
+        val item = getItem(position)
+        holder.bind(item)
+
+        // Set up an item click listener for the entire row
         holder.itemView.setOnClickListener {
-            onItemClicked(item) // Invoke the item click callback
+            onItemClicked(item)
         }
     }
 
     /**
-     * ViewHolder class for managing the views of individual inventory items.
-     *
-     * @param itemView The root view of the item layout.
+     * ViewHolder class for managing the views of individual inventory items in the RecyclerView.
+     * This class handles displaying item details and listening for user interactions.
      */
     inner class InventoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // View references for item name and quantity
+
+        // References to text views for displaying the item's name and quantity
         private val itemName: TextView = itemView.findViewById(R.id.itemName)
         private val itemQuantity: TextView = itemView.findViewById(R.id.itemQuantity)
 
-        // View references for action buttons
+        // References to action buttons for modifying quantity or deleting the item
         private val buttonAddQuantity: ImageButton = itemView.findViewById(R.id.buttonAddQuantity)
         private val buttonSubtractQuantity: ImageButton = itemView.findViewById(R.id.buttonSubtractQuantity)
         private val buttonDeleteItem: ImageButton = itemView.findViewById(R.id.buttonDeleteItem)
 
         /**
-         * Binds the data of an inventory item to the views and sets up user interaction callbacks.
+         * Binds the provided item to the views, setting up click listeners for quantity updates and deletion.
          *
-         * @param item The inventory item to bind.
+         * @param item The inventory item to be displayed and managed.
          */
         fun bind(item: Item) {
-            // Display item name and quantity
+            // Display item name and quantity with proper formatting
             itemName.text = item.name
             val formatter = NumberFormat.getInstance()
             itemQuantity.text = formatter.format(item.quantity)
 
-            // Set up click listener to increment the item's quantity
+            // Increase the item quantity by 1
             buttonAddQuantity.setOnClickListener {
                 val newQuantity = item.quantity + 1
-                onQuantityUpdate(item, newQuantity) // Notify the callback with the updated quantity
+                onQuantityUpdate(item, newQuantity)
             }
 
-            // Set up click listener to decrement the item's quantity
+            // Decrease the item quantity by 1, ensuring it doesn't go below 0
             buttonSubtractQuantity.setOnClickListener {
                 if (item.quantity > 0) {
                     val newQuantity = item.quantity - 1
-                    onQuantityUpdate(item, newQuantity) // Notify the callback with the updated quantity
+                    onQuantityUpdate(item, newQuantity)
                 } else {
-                    // Display a toast if the quantity cannot be negative
                     Toast.makeText(itemView.context, "Quantity cannot be negative", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            // Set up click listener to delete the item
+            // Delete the item from the list
             buttonDeleteItem.setOnClickListener {
-                onDeleteItem(item) // Notify the callback to delete the item
+                onDeleteItem(item)
             }
         }
     }
 
     companion object {
         /**
-         * DiffUtil callback for calculating changes between old and new item lists.
+         * Defines how the adapter determines when an item changes.
+         * Helps to optimize updates in the RecyclerView by comparing old and new lists.
          */
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Item>() {
-            /**
-             * Determines if two items represent the same entity based on their IDs.
-             *
-             * @param oldItem The old item.
-             * @param newItem The new item.
-             * @return true if the items have the same ID, false otherwise.
-             */
+            // Check if items refer to the same record based on their IDs
             override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            /**
-             * Determines if the contents of two items are the same.
-             *
-             * @param oldItem The old item.
-             * @param newItem The new item.
-             * @return true if the contents are identical, false otherwise.
-             */
+            // Check whether the contents of the items are the same
             override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                 return oldItem == newItem
             }

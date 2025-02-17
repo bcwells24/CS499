@@ -27,11 +27,16 @@ import kotlinx.coroutines.flow.collectLatest
 import com.example.inventory.data.model.Item
 
 /**
- * OverviewActivity displays the inventory list and allows users to interact with items.
+ * OverviewActivity displays the inventory list and allows users to perform a variety of operations:
+ * - Adding new items
+ * - Updating item quantity
+ * - Sorting and filtering items
+ * - Navigating to the SMS permissions screen
  */
 class OverviewActivity : AppCompatActivity() {
 
-    private val overviewViewModel: OverviewViewModel by viewModels() // ViewModel for managing inventory
+    // Obtain the ViewModel that manages the inventory data
+    private val overviewViewModel: OverviewViewModel by viewModels()
 
     // UI elements
     private lateinit var addItemButton: Button
@@ -40,6 +45,8 @@ class OverviewActivity : AppCompatActivity() {
     private lateinit var searchEditText: EditText
     private lateinit var searchButton: Button
     private lateinit var sortButton: ImageButton
+
+    // UI elements for displaying and updating the details of a selected item
     private lateinit var itemDetailCard: View
     private lateinit var itemDetailName: TextView
     private lateinit var itemDetailQuantity: TextView
@@ -49,9 +56,16 @@ class OverviewActivity : AppCompatActivity() {
     private lateinit var closeCardButton: ImageButton
 
     companion object {
-        private const val REQUEST_SMS_PERMISSION = 123
+        private const val REQUEST_SMS_PERMISSION = 123 // Used for requesting SMS permission
     }
 
+    /**
+     * Called when the activity is created. Sets up UI elements, configures the RecyclerView,
+     * and observes changes to the inventory data.
+     *
+     * @param savedInstanceState Bundle containing any saved instance state if the system
+     *                           is recreating the activity (e.g., on configuration change).
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_overview)
@@ -70,36 +84,43 @@ class OverviewActivity : AppCompatActivity() {
         updateQuantityButton = findViewById(R.id.updateQuantityButton)
         closeCardButton = findViewById(R.id.closeCardButton)
 
-        // Setup RecyclerView
+        // Setup the inventory list
         setupRecyclerView()
+        // Setup main UI interactions like adding items or opening the settings screen
         setupListeners()
+        // Observe items from the ViewModel in real-time
         observeItems()
+        // Initialize the search functionality (search and reset)
         setupSearchFunctionality()
 
-        // Handle sorting
+        // Listen for sort button clicks
         sortButton.setOnClickListener {
             overviewViewModel.toggleSortOrder()
         }
 
-        // Handle closing the detail card
+        // Close the item detail card when the close button is pressed
         closeCardButton.setOnClickListener {
             itemDetailCard.visibility = View.GONE
         }
     }
 
     /**
-     * Configures the RecyclerView with the InventoryAdapter.
+     * Configures the RecyclerView with an InventoryAdapter and sets up item interaction callbacks.
      */
     private fun setupRecyclerView() {
         inventoryAdapter = InventoryAdapter(
             onItemClicked = { item -> showItemDetails(item) },
             onQuantityUpdate = { item, newQuantity ->
+                // Update item quantity via the ViewModel
                 overviewViewModel.updateItemQuantity(item, newQuantity)
+
+                // If the new quantity is zero, check permissions to possibly send an SMS alert
                 if (newQuantity == 0) {
                     checkAndRequestSmsPermission(item.name)
                 }
             },
             onDeleteItem = { item ->
+                // Remove the item from the inventory
                 overviewViewModel.deleteItem(item)
             }
         )
@@ -110,22 +131,27 @@ class OverviewActivity : AppCompatActivity() {
     }
 
     /**
-     * Displays item details in a card view.
+     * Displays the details of the selected item in a card layout, allowing the user
+     * to manually change the item’s quantity.
      *
-     * @param item The item whose details are displayed.
+     * @param item The inventory item that was selected.
      */
     private fun showItemDetails(item: Item) {
+        // Make the detail card visible
         itemDetailCard.visibility = View.VISIBLE
+
+        // Populate the detail card fields
         itemDetailName.text = item.name
         itemDetailQuantity.text = getString(R.string.quantity_text, item.quantity)
         itemDetailDate.text = getString(R.string.date_added_text, item.dateAdded)
 
-
+        // Update the item's quantity when the button is pressed
         updateQuantityButton.setOnClickListener {
             val newQuantity = itemDetailNewQuantity.text.toString().toIntOrNull()
             if (newQuantity != null && newQuantity >= 0) {
                 overviewViewModel.updateItemQuantity(item, newQuantity)
                 Toast.makeText(this, "Quantity updated", Toast.LENGTH_SHORT).show()
+                // Hide the detail card after updating
                 itemDetailCard.visibility = View.GONE
             } else {
                 Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
@@ -134,25 +160,30 @@ class OverviewActivity : AppCompatActivity() {
     }
 
     /**
-     * Configures listeners for buttons.
+     * Sets up click listeners for adding new items and opening the settings screen.
      */
     private fun setupListeners() {
+        // Navigate to the AddItemActivity
         addItemButton.setOnClickListener {
             startActivity(Intent(this, AddItemActivity::class.java))
         }
 
+        // Navigate to the SMSPermissionsActivity
         settingsButton.setOnClickListener {
             startActivity(Intent(this, SMSPermissionsActivity::class.java))
         }
     }
 
     /**
-     * Observes real-time updates of items using the ViewModel.
+     * Observes changes to the inventory data through a Flow, updating the adapter
+     * whenever new data is emitted.
      */
     private fun observeItems() {
         lifecycleScope.launch {
+            // Collect from the Flow when in STARTED state
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 overviewViewModel.allItems.collectLatest { items ->
+                    // Update the RecyclerView's list of items
                     inventoryAdapter.submitList(items)
                 }
             }
@@ -160,7 +191,8 @@ class OverviewActivity : AppCompatActivity() {
     }
 
     /**
-     * Configures search functionality for filtering items.
+     * Sets up the search button to filter the inventory list, and also provides a way
+     * to reset the list if the search query is empty.
      */
     private fun setupSearchFunctionality() {
         searchButton.setOnClickListener {
@@ -174,11 +206,12 @@ class OverviewActivity : AppCompatActivity() {
     }
 
     /**
-     * Filters items in the adapter based on a search query.
+     * Filters items based on a user-provided search query.
      *
-     * @param query The search term.
+     * @param query The string to search for in item names.
      */
     private fun performSearch(query: String) {
+        // Ask the ViewModel to filter the item list
         val searchResults = overviewViewModel.searchItems(query)
         if (searchResults.isNotEmpty()) {
             inventoryAdapter.submitList(searchResults)
@@ -188,7 +221,7 @@ class OverviewActivity : AppCompatActivity() {
     }
 
     /**
-     * Resets the item list to show all items.
+     * Resets the inventory list to show all items when no search query is provided.
      */
     private fun resetSearch() {
         lifecycleScope.launch {
@@ -201,24 +234,41 @@ class OverviewActivity : AppCompatActivity() {
     }
 
     /**
-     * Checks and requests SMS permission if needed.
+     * Checks if the app has permission to send SMS. If not, requests the permission from the user.
+     * If already granted, triggers sending an SMS notification about the zero quantity item.
      *
-     * @param itemName The name of the item triggering the SMS.
+     * @param itemName The name of the item that triggered the SMS alert.
      */
     fun checkAndRequestSmsPermission(itemName: String) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS), REQUEST_SMS_PERMISSION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+            != PackageManager.PERMISSION_GRANTED) {
+            // Request the SMS permission
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.SEND_SMS),
+                REQUEST_SMS_PERMISSION
+            )
         } else {
+            // Permission granted, proceed with sending an SMS via the ViewModel
             overviewViewModel.sendZeroQuantitySms(itemName)
         }
     }
 
     /**
-     * Handles the result of SMS permission requests.
+     * Handles the callback for the SMS permission request.
+     *
+     * @param requestCode  Unique code identifying the permission request.
+     * @param permissions  The requested permissions.
+     * @param grantResults The results of each requested permission.
      */
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_SMS_PERMISSION && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == REQUEST_SMS_PERMISSION && grantResults.isNotEmpty()
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "SMS Permission Granted", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "SMS Permission Denied", Toast.LENGTH_SHORT).show()

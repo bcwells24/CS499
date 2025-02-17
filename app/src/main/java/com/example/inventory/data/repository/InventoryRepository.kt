@@ -9,31 +9,35 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.channels.awaitClose
 
 /**
- * InventoryRepository handles database operations for inventory items and user authentication.
- * It interfaces with Firestore to perform CRUD operations and provides real-time updates using Kotlin flows.
+ * InventoryRepository handles database operations for inventory items and user data (authentication).
+ * It uses Firebase Firestore to perform CRUD actions on items and also provides methods to register
+ * and authenticate users. Real-time updates for inventory items are managed via Kotlin Flows.
  */
 class InventoryRepository {
 
-    // Firestore instance for accessing collections
+    // Access the Firestore database instance
     private val firestore = FirebaseFirestore.getInstance()
 
-    // Firestore collection references
+    // Define references to the "items" and "users" collections in Firestore
     private val itemsCollection = firestore.collection("items")
     private val usersCollection = firestore.collection("users")
 
     /**
-     * A Flow that emits a list of all inventory items, providing real-time updates.
+     * A Kotlin Flow that emits the list of all inventory items, providing real-time updates.
+     * This flow listens to snapshot changes in the "items" Firestore collection.
      */
     val allItems: Flow<List<Item>> = callbackFlow {
         val listener = itemsCollection.addSnapshotListener { snapshot, error ->
             if (error != null) {
-                close(error) // Close the flow if an error occurs
+                // Close the flow if an error occurs
+                close(error)
                 return@addSnapshotListener
             }
 
-            // Convert Firestore documents into a list of Item objects
+            // Convert Firestore documents to a list of Item objects
             val items = snapshot?.toObjects(Item::class.java) ?: emptyList()
-            trySend(items) // Emit the items through the flow
+            // Emit the items through the flow
+            trySend(items)
         }
 
         // Remove the listener when the flow is closed
@@ -41,14 +45,15 @@ class InventoryRepository {
     }
 
     /**
-     * Adds a new item to the Firestore database.
+     * Adds a new item document to the Firestore database.
      *
-     * @param item The item to be added.
+     * @param item The item to be added to Firestore.
      * @return true if the item was added successfully, false otherwise.
      */
     suspend fun addItem(item: Item): Boolean {
         return try {
-            itemsCollection.add(item).await() // Firestore auto-generates the document ID
+            // Firestore automatically generates a document ID when adding new data
+            itemsCollection.add(item).await()
             true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -57,15 +62,16 @@ class InventoryRepository {
     }
 
     /**
-     * Retrieves an item from the Firestore database by its name.
+     * Retrieves an item from Firestore by its name.
      *
-     * @param name The name of the item to retrieve.
-     * @return The matching item, or null if not found.
+     * @param name The name of the item to look up.
+     * @return The matching Item object, or null if no item was found.
      */
     suspend fun getItemByName(name: String): Item? {
         return try {
             val querySnapshot = itemsCollection.whereEqualTo("name", name).get().await()
-            querySnapshot.documents.firstOrNull()?.toObject(Item::class.java) // Convert the first matching document to an Item
+            // Convert the first matching document to an Item, if present
+            querySnapshot.documents.firstOrNull()?.toObject(Item::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -73,20 +79,22 @@ class InventoryRepository {
     }
 
     /**
-     * Updates an existing item in the Firestore database.
+     * Updates an existing item in Firestore by matching its name field.
      *
-     * @param item The updated item object.
+     * @param item The updated Item object containing new field values.
      * @return true if the item was updated successfully, false otherwise.
      */
     suspend fun updateItem(item: Item): Boolean {
         return try {
             val querySnapshot = itemsCollection.whereEqualTo("name", item.name).get().await()
             if (querySnapshot.documents.isNotEmpty()) {
-                val documentId = querySnapshot.documents.first().id // Get Firestore's document ID
-                itemsCollection.document(documentId).set(item).await() // Update the document
+                val documentId = querySnapshot.documents.first().id
+                // Overwrite the existing document with the new Item data
+                itemsCollection.document(documentId).set(item).await()
                 true
             } else {
-                false // Item not found
+                // No document was found matching the given item name
+                false
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -95,20 +103,22 @@ class InventoryRepository {
     }
 
     /**
-     * Deletes an item from the Firestore database.
+     * Deletes an existing item from Firestore.
      *
-     * @param item The item to delete.
-     * @return true if the item was deleted successfully, false otherwise.
+     * @param item The Item object to delete (matched by name).
+     * @return true if the item was successfully deleted, false otherwise.
      */
     suspend fun deleteItem(item: Item): Boolean {
         return try {
             val querySnapshot = itemsCollection.whereEqualTo("name", item.name).get().await()
             if (querySnapshot.documents.isNotEmpty()) {
-                val documentId = querySnapshot.documents.first().id // Get Firestore's document ID
-                itemsCollection.document(documentId).delete().await() // Delete the document
+                val documentId = querySnapshot.documents.first().id
+                // Delete the document from Firestore
+                itemsCollection.document(documentId).delete().await()
                 true
             } else {
-                false // Item not found
+                // The specified item was not found in the collection
+                false
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -117,21 +127,21 @@ class InventoryRepository {
     }
 
     /**
-     * Registers a new user in the Firestore database with an encrypted password.
+     * Registers a new user in Firestore by encrypting their password before saving.
      *
-     * @param username The username of the user.
-     * @param password The plaintext password of the user.
-     * @return true if the user was registered successfully, false otherwise.
+     * @param username The user's chosen username.
+     * @param password The plaintext password that will be encrypted.
+     * @return true if the user was successfully registered, false otherwise.
      */
     suspend fun registerUser(username: String, password: String): Boolean {
         return try {
-            // Encrypt the password before saving
+            // Encrypt the password before saving it to Firestore
             val encryptedPassword = User.encryptPassword(password)
 
             // Create a User object with the encrypted password
             val user = User(username = username, encryptedPassword = encryptedPassword)
 
-            // Save the User object to Firestore
+            // Store the User object in Firestore, using the username as the document ID
             usersCollection.document(username).set(user).await()
             true
         } catch (e: Exception) {
@@ -141,21 +151,23 @@ class InventoryRepository {
     }
 
     /**
-     * Authenticates a user by verifying the provided password with the stored encrypted password.
+     * Authenticates a user by verifying the provided plaintext password against the stored (encrypted) password.
      *
-     * @param username The username of the user.
-     * @param password The plaintext password to validate.
-     * @return true if authentication is successful, false otherwise.
+     * @param username The username of the user attempting to log in.
+     * @param password The plaintext password provided by the user.
+     * @return true if authentication is successful (password match), false otherwise.
      */
     suspend fun authenticateUser(username: String, password: String): Boolean {
         return try {
+            // Retrieve the user document from Firestore
             val documentSnapshot = usersCollection.document(username).get().await()
             val user = documentSnapshot.toObject(User::class.java)
 
-            // Validate the password by decrypting the stored encrypted password
+            // Decrypt the stored password to verify
             user?.let {
                 val decryptedPassword = User.decryptPassword(it.encryptedPassword)
-                decryptedPassword == password // Return true if the passwords match
+                // Return true if the passwords match
+                decryptedPassword == password
             } ?: false
         } catch (e: Exception) {
             e.printStackTrace()

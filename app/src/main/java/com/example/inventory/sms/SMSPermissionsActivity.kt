@@ -14,7 +14,7 @@ import com.example.inventory.R
 import com.example.inventory.ui.main.LoginActivity
 
 /**
- * This activity manages SMS permissions and stores user preferences such as phone number
+ * Manages SMS permissions and stores user preferences such as phone number
  * and SMS permission state using SharedPreferences.
  */
 class SMSPermissionsActivity : AppCompatActivity() {
@@ -30,14 +30,27 @@ class SMSPermissionsActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
-        private const val PREFS_NAME = "SMSPrefs" // Name of the SharedPreferences file
-        private const val KEY_PHONE_NUMBER = "phone_number" // Key for storing phone number
-        private const val KEY_SMS_PERMISSION = "sms_permission" // Key for storing SMS permission state
+        // Name of the SharedPreferences file
+        private const val PREFS_NAME = "SMSPrefs"
+
+        // Key for storing phone number
+        private const val KEY_PHONE_NUMBER = "phone_number"
+
+        // Key for storing SMS permission state
+        private const val KEY_SMS_PERMISSION = "sms_permission"
     }
 
+    /**
+     * Called when the activity is created. Initializes UI components, loads user preferences,
+     * and sets up event listeners for SMS permission toggling, logout, and returning to the
+     * previous screen.
+     *
+     * @param savedInstanceState Contains data supplied by the system when the activity is re-initialized.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sms_permissions)
+
         try {
             // Initialize UI elements
             phoneNumberEditText = findViewById(R.id.editTextPhoneNumber)
@@ -49,37 +62,37 @@ class SMSPermissionsActivity : AppCompatActivity() {
             // Initialize SharedPreferences
             sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
 
-            // Load saved preferences and update the UI
+            // Load saved preferences and update UI
             loadPreferences()
 
-            // Handle SMS permission toggle
+            // Handle SMS permission toggle event
             smsPermissionToggle.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked && phoneNumberEditText.text.isNullOrEmpty()) {
-                    // Show an error message if the phone number is empty
+                    // Show an error if no phone number is provided
                     Toast.makeText(this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show()
                     smsPermissionToggle.isChecked = false
                     return@setOnCheckedChangeListener
                 }
-                // Save the updated preferences and update the UI
+                // Save the updated preferences (phone number + permission) and refresh UI status
                 savePreferences(isChecked)
                 updatePermissionStatus(isChecked)
             }
 
             // Handle logout button click
             logoutButton.setOnClickListener {
-                // Navigate to the LoginActivity
+                // Navigate to the LoginActivity and finish this activity
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }
 
             // Handle return button click
             returnButton.setOnClickListener {
-                // Close the current activity and return to the previous screen
+                // Close the current activity, returning to the previous screen
                 finish()
             }
 
         } catch (e: Exception) {
-            // Handle unexpected errors during activity initialization
+            // Log and display any initialization errors
             e.printStackTrace()
             Toast.makeText(this, "Error loading activity: ${e.message}", Toast.LENGTH_LONG).show()
         }
@@ -87,23 +100,23 @@ class SMSPermissionsActivity : AppCompatActivity() {
 
     /**
      * Loads the saved preferences for phone number and SMS permission state
-     * and updates the corresponding UI elements.
+     * from SharedPreferences, updating the UI elements accordingly.
      */
     private fun loadPreferences() {
         val phoneNumber = sharedPreferences.getString(KEY_PHONE_NUMBER, "") ?: ""
         val isSmsEnabled = sharedPreferences.getBoolean(KEY_SMS_PERMISSION, false)
 
-        // Update the phone number input field and toggle button state
+        // Set the phone number input field and toggle button state based on saved prefs
         phoneNumberEditText.setText(phoneNumber)
         smsPermissionToggle.isChecked = isSmsEnabled
+        // Reflect the current permission state in the text view
         updatePermissionStatus(isSmsEnabled)
     }
 
     /**
-     * Saves the provided SMS permission state and the entered phone number
-     * into SharedPreferences.
+     * Saves the current phone number and SMS permission state into SharedPreferences.
      *
-     * @param smsPermission The current state of the SMS permission toggle.
+     * @param smsPermission The state of the SMS permission toggle (true = granted, false = denied).
      */
     private fun savePreferences(smsPermission: Boolean) {
         sharedPreferences.edit().apply {
@@ -114,9 +127,9 @@ class SMSPermissionsActivity : AppCompatActivity() {
     }
 
     /**
-     * Updates the UI to display the current SMS permission status.
+     * Updates the on-screen text to display the current SMS permission status.
      *
-     * @param isGranted True if SMS permission is granted; false otherwise.
+     * @param isGranted True if SMS permission is enabled, false otherwise.
      */
     private fun updatePermissionStatus(isGranted: Boolean) {
         permissionStatusTextView.text =
