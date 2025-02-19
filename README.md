@@ -1,4 +1,7 @@
 # Android Inventory App
+## Created by: Bradley Wells for the Computer Science Capstone Course
+## Southern New Hampshire University
+## Advised by: Dr. Maciosek
 
 ## Overview
 This guide provides the steps needed to open, build, and run the **Android Inventory App** located 
