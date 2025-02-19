@@ -48,4 +48,5 @@ object SMSManager {
     }
 }
 
-/** Reference: https://www.tutorialspoint.com/android/android_sending_sms.htm */
+/** Reference: https://www.tutorialspoint.com/android/android_sending_sms.html
+ * Created by: Bradley Wells */

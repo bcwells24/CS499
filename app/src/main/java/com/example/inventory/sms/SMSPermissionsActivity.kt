@@ -137,4 +137,5 @@ class SMSPermissionsActivity : AppCompatActivity() {
     }
 }
 
-/** Reference: https://stackoverflow.com/questions/50061698/sms-permissions */
+/** Reference: https://stackoverflow.com/questions/50061698/sms-permissions
+ * Created by: Bradley Wells*/

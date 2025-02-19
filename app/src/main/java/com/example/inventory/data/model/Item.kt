@@ -31,4 +31,5 @@ data class Item(
     }
 }
 
-/** Reference: https://firebase.google.com/docs/firestore/manage-data/add-data */
+/** Reference: https://firebase.google.com/docs/firestore/manage-data/add-data
+ * Created by: Bradley Wells */

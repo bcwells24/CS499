@@ -84,4 +84,5 @@ class LoginActivity : AppCompatActivity() {
     }
 }
 
-/** Reference: https://www.tutorialspoint.com/android/android_login_screen.htm */
+/** Reference: https://www.tutorialspoint.com/android/android_login_screen.htm
+ * Created by: Bradley Wells*/

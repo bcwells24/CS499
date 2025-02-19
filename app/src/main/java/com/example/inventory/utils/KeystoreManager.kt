@@ -52,4 +52,5 @@ object KeyStoreManager {
     }
 }
 
-/** Reference: https://developer.android.com/privacy-and-security/keystore?hl=en */
+/** Reference: https://developer.android.com/privacy-and-security/keystore?hl=en
+ * Created by: Bradley Wells*/

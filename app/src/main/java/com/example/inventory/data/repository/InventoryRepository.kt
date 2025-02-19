@@ -176,4 +176,5 @@ class InventoryRepository {
     }
 }
 
-/** Reference: https://firebase.google.com/docs/firestore/quickstart */
+/** Reference: https://firebase.google.com/docs/firestore/quickstart
+  * Created by: Bradley Wells */

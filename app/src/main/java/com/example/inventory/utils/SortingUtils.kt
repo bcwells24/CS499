@@ -54,6 +54,6 @@ private fun <T> MutableList<T>.swap(i: Int, j: Int) {
     this[j] = temp
 }
 
-/** Reference:
-Gautam, Aman. (2017, December 17). Program for heapsort in kotlin. Include Help. https://www.includehelp.com/kotlin/program-for-heapsort.aspx
- */
+/** Reference: Gautam, Aman. (2017, December 17). Program for heapsort in kotlin. Include Help.
+ * https://www.includehelp.com/kotlin/program-for-heapsort.aspx
+ * Created by: Bradley Wells */
