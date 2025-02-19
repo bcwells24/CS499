@@ -15,7 +15,7 @@ You will use **Android Studio (Ladybug)** to open and run the application.
 Before running the application, ensure the following:
 
 1. **Android Studio**
-    - Install the latest version of Android Studio (Ladybug).
+    - Install the latest version of Android Studio.
     - Ensure all necessary components like SDKs, build tools, and the emulator are installed.
 
 2. **Java Development Kit (JDK)**
@@ -79,7 +79,7 @@ Before running the application, ensure the following:
     - Verify the correct Android SDK version is installed via **File > Project Structure > SDK Location**.
 
 2. **Emulator Not Starting**:
-    - Ensure the emulator has enough allocated RAM (at least 2 GB).
+    - Ensure the emulator has enough allocated RAM.
     - Restart the emulator or create a new one in the AVD Manager.
 
 3. **Build Errors**:
